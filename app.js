@@ -2,7 +2,9 @@ const express = require('express'),
       app = express();
 
 app.set('view engine', 'ejs');
-app.use(express.static('public'));    //sets the public directory to serve 
+// Sets directory to serve static files
+// can be accessed from root route eg. /stylesheets/app.css
+app.use(express.static('public'));
 
 app.get('/', (req, res) => {
   res.render('landing');
