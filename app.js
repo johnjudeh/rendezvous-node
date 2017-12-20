@@ -10,10 +10,6 @@ app.get('/', (req, res) => {
   res.render('landing');
 });
 
-app.get('/maps', (req, res) => {
-  res.render('index');
-});
-
 app.get('/maps/:locReq', (req, res) => {
   let locReq = req.params.locReq;
   res.render('index', {locReq: locReq});
