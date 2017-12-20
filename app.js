@@ -14,6 +14,11 @@ app.get('/maps', (req, res) => {
   res.render('index');
 });
 
+app.get('/maps/:locReq', (req, res) => {
+  let locReq = req.params.locReq;
+  res.render('index', {locReq: locReq});
+});
+
 app.listen(8080, () => {
   console.log('Mapper Server ---> ON');
   console.log('listening on localhost:8080');

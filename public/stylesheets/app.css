@@ -1,6 +1,10 @@
 .container.main {
-  margin-top: 6.0em;
+  margin-top: 7.0em;
   height: 100%;
+}
+
+h1 {
+  margin-bottom: 0.7em;
 }
 
 i.icon.logo {
@@ -8,14 +12,37 @@ i.icon.logo {
   margin: 0em;
 }
 
+.grid {
+  height: 70%;
+}
+
 .container.map {
-  width: 68%;
+  width: 100%;
   height: 100%;
-  float: left;
+  /* float: left; */
 }
 
 #map {
-  height: 70%;
+  height: 100%;
   width: 100%;
   border-radius: 4px;
+}
+
+div.ui.locator {
+  width: 80%;
+  margin: 5% 10%;
+}
+
+form.subtle {
+  display: flex;
+}
+
+.ui.buttons form.subtle button.geo {
+  width: 65%;
+  border-top-right-radius: 0rem;
+  border-bottom-right-radius: 0rem;
+}
+
+button.search {
+  width: 35%;
 }

@@ -2,23 +2,34 @@
 
 <div class='ui container main'>
   <h1>Maps Page</h1>
-  <div class='ui container map'>
-    <div id='map'></div>
-  <div>
+  <div class='ui grid contianer'>
+
+    <div class='eleven wide column map'>
+      <div id='map'></div>
+    </div>
+
+    <div class='five wide column'>
+      <div class='ui horizontal divider'>
+        Add Friends
+      </div>
+      <div class="ui buttons locator">
+        <form class='subtle' method='get' action='/maps/true'>
+          <button class="ui teal button geo locateButton">
+            <i class="marker icon"></i>Locate
+          </button>
+        </form>
+        <div class="or"></div>
+        <button class="ui grey button search">Search</button>
+      </div>
+    </div>
+
+  </div>
 </div>
 
+<script type="text/javascript" src='/js/maps.js' data-locReq=""></script>
 
-<script>
-  var map;
-    function initMap() {
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 51.5007, lng: -0.12406},
-        zoom: 11
-      });
-    }
-</script>
 <script async defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB51zd59N_pPiw_Qlpz1rIj-ysc4nG02no&callback=initMap">
+  src='https://maps.googleapis.com/maps/api/js?key=AIzaSyB51zd59N_pPiw_Qlpz1rIj-ysc4nG02no&callback=initMap'>
 </script>
 
 <% include ./partials/footer %>
