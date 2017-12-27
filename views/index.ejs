@@ -13,11 +13,11 @@
         Add Friends
       </div>
       <div class="ui buttons locator">
-        <form class='subtle' method='get' action='/maps/true'>
+        <%# <form class='subtle' method='get' action='/maps/true'> %>
           <button class="ui teal button geo locateButton">
             <i class="marker icon"></i>Locate
           </button>
-        </form>
+        <%# </form> %>
         <div class="or"></div>
         <button class="ui grey button search">Search</button>
       </div>
@@ -26,8 +26,8 @@
   </div>
 </div>
 
-<script type="text/javascript" src='/js/maps.js' data-locReq="<%= locReq %>"></script>
-<script async defer
+<script type="text/javascript" src='/js/maps.js'></script>
+<script async defer id='initialMap'
   src='https://maps.googleapis.com/maps/api/js?key=AIzaSyB51zd59N_pPiw_Qlpz1rIj-ysc4nG02no&callback=initMap'>
 </script>
 

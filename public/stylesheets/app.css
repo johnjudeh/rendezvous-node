@@ -35,14 +35,14 @@ div.ui.locator {
 
 form.subtle {
   display: flex;
+  width: 62%;
 }
 
 .ui.buttons form.subtle button.geo {
-  width: 65%;
   border-top-right-radius: 0rem;
   border-bottom-right-radius: 0rem;
 }
 
 button.search {
-  width: 35%;
+  width: 38%;
 }
