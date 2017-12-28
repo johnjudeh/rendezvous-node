@@ -1,6 +1,6 @@
 let map, infoWindow, pos;
 let locations = [
-  {lat: 24.5, lng: 54.4}
+  {lat: 24.356, lng: 54.35336840000001}
   // {lat: 24.4768583, lng: 54.35336840000001}
 ];
 let locateButton = document.querySelector('.locateButton');
@@ -34,7 +34,7 @@ function initMapGeo() {
       let midPoint = findMidPoint(locations);
 
       map.setCenter(midPoint);
-      map.setZoom(13);
+      map.setZoom(12);
 
     }, () => {
       handleLocationError(true, infoWindow, map.getCenter());
@@ -108,3 +108,12 @@ locateButton.addEventListener('click', () => {
   document.body.appendChild(scriptMarkerCluster);
   document.body.appendChild(scriptMap);
 });
+
+/* Notes
+
+0.015 -   Zoom 15
+0.03  -   Zoom 14
+0.06  -   Zoom 13
+0.12  -   Zoom 12
+
+*/
