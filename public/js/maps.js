@@ -1,6 +1,6 @@
 let map, infoWindow, pos;
 let locations = [
-  {lat: 24.356, lng: 54.35336840000001}
+  {lat: 24.467, lng: 54.35336840000001}
   // {lat: 24.4768583, lng: 54.35336840000001}
 ];
 let locateButton = document.querySelector('.locateButton');
@@ -31,10 +31,13 @@ function initMapGeo() {
       locations.push(pos);
       createMarkerClusterer();
 
-      let midPoint = findMidPoint(locations);
+      let midPoint = getMidPoint(locations);
+      let zoomLevel = getZoomLevel(locations);
+
+      console.log(zoomLevel);
 
       map.setCenter(midPoint);
-      map.setZoom(12);
+      map.setZoom(zoomLevel);
 
     }, () => {
       handleLocationError(true, infoWindow, map.getCenter());
@@ -69,7 +72,7 @@ function createMarkerClusterer(){
         {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
 }
 
-function findMidPoint(locations) {
+function getMidPoint(locations) {
   let lats = []
   let lngs = [];
   let avgCoords = {};
@@ -91,6 +94,44 @@ function average(arr) {
     sum += index;
   }
   return sum / arr.length;
+}
+
+// Zoom dynamically generated, needs to be testing on each if case
+// Need to add more complexity to it as should deal with an situation (no matter the remoteness)
+
+function getZoomLevel(locations) {
+  let maxLat, minLat, maxLng, minLng;
+  let latRange, lngRange, maxRange, zoomLevel;
+  let lats = []
+  let lngs = [];
+
+  locations.forEach((location) => {
+    lats.push(location.lat);
+    lngs.push(location.lng);
+  });
+
+  maxLat = Math.max(...lats);
+  minLat = Math.min(...lats);
+  maxLng = Math.max(...lngs);
+  minLng = Math.min(...lngs);
+
+  latRange = maxLat - minLat;
+  lngRange = maxLng - minLng;
+  maxRange = Math.max(latRange, lngRange);
+
+  if (maxRange <= 0.015) {
+    zoomLevel = 15;
+  } else if (maxRange <= 0.03) {
+    zoomLevel = 14;
+  } else if (maxRange <= 0.06) {
+    zoomLevel = 13;
+  } else if (maxRange <= 0.12) {
+    zoomLevel = 12;
+  } else {
+    zoomLevel = 11;
+  }
+
+  return zoomLevel;
 }
 
 locateButton.addEventListener('click', () => {
