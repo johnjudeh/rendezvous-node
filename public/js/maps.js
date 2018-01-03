@@ -1,7 +1,7 @@
 let map, infoWindow, pos;
 let locations = [
-  {lat: 24.467, lng: 54.35336840000001}
-  // {lat: 24.4768583, lng: 54.35336840000001}
+  {lat: 40.4648329 - (0.001640624 * Math.pow(2, 4)), lng: 50.0521075}
+  // {lat: 40.4648329, lng: 50.0521075}
 ];
 let locateButton = document.querySelector('.locateButton');
 
@@ -35,6 +35,7 @@ function initMapGeo() {
       let zoomLevel = getZoomLevel(locations);
 
       console.log(zoomLevel);
+      console.log(pos);
 
       map.setCenter(midPoint);
       map.setZoom(zoomLevel);
@@ -96,12 +97,15 @@ function average(arr) {
   return sum / arr.length;
 }
 
-// Zoom dynamically generated, needs to be testing on each if case
-// Need to add more complexity to it as should deal with an situation (no matter the remoteness)
-
 function getZoomLevel(locations) {
+
+  const increment = 0.001640625;
+  const zoomLevels = [
+    18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+  ];
+
   let maxLat, minLat, maxLng, minLng;
-  let latRange, lngRange, maxRange, zoomLevel;
+  let latRange, lngRange, maxRange, zoomIndex, zoomLevel;
   let lats = []
   let lngs = [];
 
@@ -119,16 +123,12 @@ function getZoomLevel(locations) {
   lngRange = maxLng - minLng;
   maxRange = Math.max(latRange, lngRange);
 
-  if (maxRange <= 0.015) {
-    zoomLevel = 15;
-  } else if (maxRange <= 0.03) {
-    zoomLevel = 14;
-  } else if (maxRange <= 0.06) {
-    zoomLevel = 13;
-  } else if (maxRange <= 0.12) {
-    zoomLevel = 12;
+  zoomIndex = Math.round((Math.log(maxRange) - Math.log(increment)) / Math.log(2));
+
+  if (zoomIndex <= 17) {
+    zoomLevel = zoomLevels[zoomIndex];
   } else {
-    zoomLevel = 11;
+    zoomLevel = 1;
   }
 
   return zoomLevel;
@@ -152,9 +152,12 @@ locateButton.addEventListener('click', () => {
 
 /* Notes
 
+0.001640625   -   Zoom 18 (used as increment)
 0.015 -   Zoom 15
 0.03  -   Zoom 14
 0.06  -   Zoom 13
 0.12  -   Zoom 12
+0.21  -   Zoom 11
+0.42  -   Zoom 10
 
 */
