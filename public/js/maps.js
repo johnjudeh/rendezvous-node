@@ -152,6 +152,9 @@ locateButton.addEventListener('click', () => {
 
 /* Notes
 
+Works based on height not width so sometimes width seperation uses a
+zoom level that is too low (no easy fix)
+
 0.001640625   -   Zoom 18 (used as increment)
 0.015 -   Zoom 15
 0.03  -   Zoom 14

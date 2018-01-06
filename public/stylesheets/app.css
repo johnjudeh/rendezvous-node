@@ -12,6 +12,11 @@ i.icon.logo {
   margin: 0em 0.2em;
 }
 
+.logo__text {
+  font-size: 1.15em;
+  font-weight: 400;
+}
+
 .grid {
   height: 70%;
 }
