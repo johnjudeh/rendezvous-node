@@ -141,7 +141,7 @@ locateButton.addEventListener('click', () => {
   let scriptMap = document.createElement('script');
   scriptMap.async = true;
   scriptMap.defer = true;
-  scriptMap.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyB51zd59N_pPiw_Qlpz1rIj-ysc4nG02no&callback=initMapGeo';
+  scriptMap.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCSV5BXC93ll0igbOw23qAAzyEjN84KtPk&callback=initMapGeo&libraries=places';
 
   let scriptMarkerCluster = document.createElement('script');
   scriptMarkerCluster.src = 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js'
