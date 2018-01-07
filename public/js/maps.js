@@ -1,4 +1,5 @@
-let map, infoWindow, pos;
+let map, infoWindow, pos, autocomplete, places;
+let countryRestrict = {'country': 'uk'};
 let locations = [
   {lat: 51.4955329, lng: -0.0765513 - (0.0038 * Math.pow(2, -1))}
   // {lat: 51.4955329, lng: -0.0765513}
@@ -11,6 +12,10 @@ function initMap() {
     center: {lat: 51.5007, lng: -0.12406},
     zoom: 12
   });
+
+  document.getElementById('map').addEventListener('click', () => {
+    map.panTo({lat: 51.4955329, lng: -0.0765513 - (0.0038 * Math.pow(2, -1))})
+  })
 }
 
 function initMapGeo() {
@@ -49,6 +54,47 @@ function initMapGeo() {
     handleLocationError(false, infoWindow, map.getCenter());
   }
 
+}
+
+function initMapSearch() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 51.5007, lng: -0.12406},
+    zoom: 12,
+    mapTypeControl: false,
+    panControl: false,
+    zoomControl: false,
+    streetViewControl: false
+  });
+
+  infoWindow = new google.maps.InfoWindow({
+    content: document.getElementById('info-content')
+  });
+
+  autocomplete = new google.maps.places.Autocomplete(
+      /* @type {!HTMLInputElement} */ (
+        document.getElementById('autocomplete')), {
+        types: [],
+        // types: ['address'],
+        componentRestrictions: countryRestrict
+      });
+  places = new google.maps.places.PlacesService(map);
+
+  autocomplete.addListener('place_changed', onPlaceChanged);
+}
+
+function onPlaceChanged() {
+  var place = autocomplete.getPlace();
+
+  console.dir(place.geometry.location);
+  console.dir(place.geometry.location.toJSON());
+
+  if (place.geometry.location) {
+    map.panTo(place.geometry.location);
+    map.setZoom(15);
+    // search();
+  } else {
+    document.getElementById('autocomplete').placeholder = 'Enter a city';
+  }
 }
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
@@ -152,13 +198,8 @@ function getZoomLevel(locations) {
 }
 
 locateButton.addEventListener('click', () => {
-  const initScript = document.getElementById('initialMap');
-  document.body.removeChild(initScript);
-
-  let scriptMap = document.createElement('script');
-  scriptMap.async = true;
-  scriptMap.defer = true;
-  scriptMap.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCSV5BXC93ll0igbOw23qAAzyEjN84KtPk&libraries=places&callback=initMapGeo';
+  let src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCSV5BXC93ll0igbOw23qAAzyEjN84KtPk&libraries=places&callback=initMapGeo';
+  let scriptMap = getNewScript(src);
 
   let scriptMarkerCluster = document.createElement('script');
   scriptMarkerCluster.src = 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js'
@@ -182,7 +223,24 @@ searchButton.addEventListener('click', () => {
   input.placeholder = 'Search for Address';
 
   locatorDiv.appendChild(input);
+
+  let src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCSV5BXC93ll0igbOw23qAAzyEjN84KtPk&libraries=places&callback=initMapSearch';
+  let scriptMap = getNewScript(src);
+
+  document.body.appendChild(scriptMap);
 });
+
+function getNewScript(src) {
+  const initScript = document.getElementById('initialMap');
+  document.body.removeChild(initScript);
+
+  let scriptMap = document.createElement('script');
+  scriptMap.async = true;
+  scriptMap.defer = true;
+  scriptMap.src = src;
+
+  return scriptMap;
+}
 
 /* Notes
 
