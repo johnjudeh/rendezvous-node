@@ -1,7 +1,7 @@
 let map, infoWindow, pos;
 let locations = [
-  {lat: 40.4648329 - (0.001640624 * Math.pow(2, 4)), lng: 50.0521075}
-  // {lat: 40.4648329, lng: 50.0521075}
+  {lat: 51.4955329 - (0.00137 * Math.pow(2, 4)), lng: -0.0765513}
+  // {lat: 51.4955329, lng: -0.0765513}
 ];
 let locateButton = document.querySelector('.locateButton');
 
@@ -99,7 +99,7 @@ function average(arr) {
 
 function getZoomLevel(locations) {
 
-  const increment = 0.001640625;
+  const increment = 0.00137;
   const zoomLevels = [
     18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
   ];
