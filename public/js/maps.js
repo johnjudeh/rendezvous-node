@@ -1,6 +1,6 @@
 let map, infoWindow, pos;
 let locations = [
-  {lat: 51.4955329 - (0.00137 * Math.pow(2, 4)), lng: -0.0765513}
+  {lat: 51.4955329, lng: -0.0765513 - (0.0038 * Math.pow(2, -1))}
   // {lat: 51.4955329, lng: -0.0765513}
 ];
 let locateButton = document.querySelector('.locateButton');
@@ -34,8 +34,8 @@ function initMapGeo() {
       let midPoint = getMidPoint(locations);
       let zoomLevel = getZoomLevel(locations);
 
-      console.log(zoomLevel);
-      console.log(pos);
+      // console.log(zoomLevel);
+      // console.log(pos);
 
       map.setCenter(midPoint);
       map.setZoom(zoomLevel);
@@ -99,15 +99,19 @@ function average(arr) {
 
 function getZoomLevel(locations) {
 
-  const increment = 0.00137;
+  const latIncrement = 0.00137;
+  const lngIncrement = 0.0038;
   const zoomLevels = [
     18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
   ];
 
-  let maxLat, minLat, maxLng, minLng;
-  let latRange, lngRange, maxRange, zoomIndex, zoomLevel;
-  let lats = []
+  let lats = [];
   let lngs = [];
+
+  let maxLat, minLat, maxLng, minLng;
+  let latRange, lngRange;
+  let latZoomIndex, lngZoomIndex, latZoomLevel, lngZoomLevel;
+  let zoomLevel;
 
   locations.forEach((location) => {
     lats.push(location.lat);
@@ -121,15 +125,27 @@ function getZoomLevel(locations) {
 
   latRange = maxLat - minLat;
   lngRange = maxLng - minLng;
-  maxRange = Math.max(latRange, lngRange);
 
-  zoomIndex = Math.round((Math.log(maxRange) - Math.log(increment)) / Math.log(2));
+  latZoomIndex = Math.round((Math.log(latRange) - Math.log(latIncrement)) / Math.log(2));
+  lngZoomIndex = Math.round((Math.log(lngRange) - Math.log(lngIncrement)) / Math.log(2));
 
-  if (zoomIndex <= 17) {
-    zoomLevel = zoomLevels[zoomIndex];
+  if (latZoomIndex < 0) {
+    latZoomLevel = 18;
+  } else if(latZoomIndex <= 17) {
+    latZoomLevel = zoomLevels[latZoomIndex];
   } else {
-    zoomLevel = 1;
+    latZoomLevel = 1;
   }
+
+  if (lngZoomIndex < 0) {
+    lngZoomLevel = 18;
+  } else if (lngZoomIndex <= 17) {
+    lngZoomLevel = zoomLevels[lngZoomIndex];
+  } else {
+    lngZoomLevel = 1;
+  }
+
+  zoomLevel = Math.min(latZoomLevel, lngZoomLevel);
 
   return zoomLevel;
 }
