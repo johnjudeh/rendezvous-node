@@ -38,16 +38,17 @@ div.ui.locator {
   margin: 5% 10%;
 }
 
-form.subtle {
-  display: flex;
+.ui.buttons button.geo {
   width: 62%;
-}
-
-.ui.buttons form.subtle button.geo {
   border-top-right-radius: 0rem;
   border-bottom-right-radius: 0rem;
+  margin-right: 0.2rem;
 }
 
 button.search {
   width: 38%;
+}
+
+#autocomplete {
+  text-align: center;
 }

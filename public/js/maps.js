@@ -3,7 +3,8 @@ let locations = [
   {lat: 51.4955329, lng: -0.0765513 - (0.0038 * Math.pow(2, -1))}
   // {lat: 51.4955329, lng: -0.0765513}
 ];
-let locateButton = document.querySelector('.locateButton');
+let locateButton = document.querySelector('button.locateButton');
+let searchButton = document.querySelector('button.search');
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -164,6 +165,23 @@ locateButton.addEventListener('click', () => {
 
   document.body.appendChild(scriptMarkerCluster);
   document.body.appendChild(scriptMap);
+});
+
+searchButton.addEventListener('click', () => {
+  const locatorDiv = document.querySelector('.locator');
+  // removes all children
+  while (locatorDiv.firstChild) {
+      locatorDiv.removeChild(locatorDiv.firstChild);
+  }
+
+  locatorDiv.className = 'ui input focus locator';
+
+  let input = document.createElement('input');
+  input.id = 'autocomplete';
+  input.type = 'text';
+  input.placeholder = 'Search for Address';
+
+  locatorDiv.appendChild(input);
 });
 
 /* Notes
