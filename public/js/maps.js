@@ -11,7 +11,7 @@ let locations = [
 let locateButton = document.querySelector('button.locateButton');
 let searchButton = document.querySelector('button.search');
 
-function initMapNew() {
+function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     // center: {lat: 51.5007, lng: -0.12406},
     center: {lat: 51.509, lng: -0.116},
@@ -69,56 +69,6 @@ function createSearchInput () {
 
   const searchDiv = document.querySelector('#search');
   searchDiv.className = 'ui input focus locator';
-}
-
-function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 51.5007, lng: -0.12406},
-    zoom: 12
-  });
-
-  document.getElementById('map').addEventListener('click', () => {
-    map.panTo({lat: 51.4955329, lng: -0.0765513 - (0.0038 * Math.pow(2, -1))})
-    // map.getCenter();
-  })
-}
-
-function initMapGeo() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 51.5007, lng: -0.12406},
-    zoom: 12
-  });
-
-  infoWindow = new google.maps.InfoWindow;
-
-  // Try HTML5 geolocation.
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(position => {
-      pos = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
-
-      locations.push(pos);
-      createMarkerClusterer();
-
-      let midPoint = getMidPoint(locations);
-      let zoomLevel = getZoomLevel(locations);
-
-      // console.log(zoomLevel);
-      // console.log(pos);
-
-      map.setCenter(midPoint);
-      map.setZoom(zoomLevel);
-
-    }, () => {
-      handleLocationError(true, infoWindow, map.getCenter());
-    });
-  } else {
-    // Browser doesn't support Geolocation
-    handleLocationError(false, infoWindow, map.getCenter());
-  }
-
 }
 
 function initMapSearch() {
@@ -273,18 +223,3 @@ function getZoomLevel(locations) {
 
   return zoomLevel;
 }
-
-/* Notes
-
-Works based on height not width so sometimes width seperation uses a
-zoom level that is too low (no easy fix)
-
-0.001640625   -   Zoom 18 (used as increment)
-0.015 -   Zoom 15
-0.03  -   Zoom 14
-0.06  -   Zoom 13
-0.12  -   Zoom 12
-0.21  -   Zoom 11
-0.42  -   Zoom 10
-
-*/
