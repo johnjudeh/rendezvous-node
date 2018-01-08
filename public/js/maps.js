@@ -8,6 +8,7 @@ let locations = [
   // {lat: 51.4955329 - (0.00137 * Math.pow(2, 4)), lng: -0.0765513 - (0.0038 * Math.pow(2, 4))}
   // {lat: 51.4955329, lng: -0.0765513}
 ];
+let addresses = ['Flat 1, Amisha Court, SE1 3GH'];
 let locateButton = document.querySelector('button.locateButton');
 let searchButton = document.querySelector('button.search');
 
@@ -23,8 +24,8 @@ function initMap() {
 
   infoWindow = new google.maps.InfoWindow;
 
-  locateButton.addEventListener('click', geolocateUser);
-  searchButton.addEventListener('click', createAutocomplete);
+  locateButton.addEventListener('click', () => geolocateUser(infoWindow));
+  searchButton.addEventListener('click', () => createAutocomplete(infoWindow));
 }
 
 function geolocateUser(infoWindow) {
@@ -37,6 +38,8 @@ function geolocateUser(infoWindow) {
       };
 
       locations.push(pos);
+      hideLocatorButtons();
+      addFriendLocation();
       createMarkerClusterer();
 
     }, () => {
@@ -64,11 +67,20 @@ function createAutocomplete(infoWindow) {
 }
 
 function createSearchInput () {
-  const locatorDiv = document.querySelector('#locator');
-  locatorDiv.className += ' hidden';
+  hideLocatorButtons();
 
   const searchDiv = document.querySelector('#search');
   searchDiv.className = 'ui input focus locator';
+}
+
+function hideLocatorButtons() {
+  const locatorDiv = document.querySelector('#locator');
+  locatorDiv.className += ' hidden';
+}
+
+function addFriendLocation() {
+  const friendHolder = document.querySelector('.friendHolder');
+  friendHolder.className = 'ui card locator friendHolder';
 }
 
 function initMapSearch() {

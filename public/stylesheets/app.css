@@ -56,3 +56,22 @@ button.search {
 div.ui.hidden {
   display: none;
 }
+
+.friendHolder {
+  height: 5em;
+  /* border-top-left-radius: 1rem; */
+  /* border-bottom-left-radius: .28571429rem; */
+  /* margin: 5% 10%; */
+}
+
+.ui.card .avatar img, .ui.card img.avatar, .ui.cards>.card .avatar img, .ui.cards>.card img.avatar {
+  height: 3em;
+  width: 3em;
+}
+
+.address {
+  display: inline-flex;
+  vertical-align: middle;
+  margin-left: 3px !important;
+  /* font-size: 10px; */
+}
