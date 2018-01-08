@@ -1,11 +1,70 @@
 let map, infoWindow, pos, autocomplete, places;
 let countryRestrict = {'country': 'uk'};
 let locations = [
-  {lat: 51.4955329, lng: -0.0765513 - (0.0038 * Math.pow(2, -1))}
+  // {lat: 51.4955329, lng: -0.0765513 - (0.0038 * Math.pow(2, -1))}
   // {lat: 51.4955329, lng: -0.0765513}
 ];
 let locateButton = document.querySelector('button.locateButton');
 let searchButton = document.querySelector('button.search');
+
+function initMapNew() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 51.5007, lng: -0.12406},
+    zoom: 12,
+    mapTypeControl: false,
+    streetViewControl: false
+    // zoomControl: false,
+  });
+
+  infoWindow = new google.maps.InfoWindow;
+
+  locateButton.addEventListener('click', geolocateUser);
+  searchButton.addEventListener('click', createAutocomplete);
+}
+
+function geolocateUser(infoWindow) {
+  // Try HTML5 geolocation.
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(position => {
+      pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+
+      locations.push(pos);
+      createMarkerClusterer();
+
+    }, () => {
+      handleLocationError(true, infoWindow, map.getCenter());
+    });
+  } else {
+    // Browser doesn't support Geolocation
+    handleLocationError(false, infoWindow, map.getCenter());
+  }
+}
+
+function createAutocomplete(infoWindow) {
+  // replaces locations buttons with search bar
+  createSearchInput();
+
+  autocomplete = new google.maps.places.Autocomplete(
+    document.getElementById('autocomplete'), {
+    types: [],
+    // types: ['address'],
+    componentRestrictions: countryRestrict
+  });
+  places = new google.maps.places.PlacesService(map);
+
+  autocomplete.addListener('place_changed', onPlaceChanged);
+}
+
+function createSearchInput () {
+  const locatorDiv = document.querySelector('#locator');
+  locatorDiv.className += ' hidden';
+
+  const searchDiv = document.querySelector('#search');
+  searchDiv.className = 'ui input focus locator';
+}
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -15,6 +74,7 @@ function initMap() {
 
   document.getElementById('map').addEventListener('click', () => {
     map.panTo({lat: 51.4955329, lng: -0.0765513 - (0.0038 * Math.pow(2, -1))})
+    // map.getCenter();
   })
 }
 
@@ -83,14 +143,15 @@ function initMapSearch() {
 }
 
 function onPlaceChanged() {
-  var place = autocomplete.getPlace();
+  let place = autocomplete.getPlace();
 
-  console.dir(place.geometry.location);
-  console.dir(place.geometry.location.toJSON());
+  console.log(place);
 
   if (place.geometry.location) {
-    map.panTo(place.geometry.location);
-    map.setZoom(15);
+    locations.push(place.geometry.location.toJSON());
+    createMarkerClusterer();
+    // map.panTo(place.geometry.location);
+    // map.setZoom(15);
     // search();
   } else {
     document.getElementById('autocomplete').placeholder = 'Enter a city';
@@ -118,6 +179,12 @@ function createMarkerClusterer(){
 
   let markerCluster = new MarkerClusterer(map, markers,
         {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+
+  let midPoint = getMidPoint(locations);
+  let zoomLevel = getZoomLevel(locations);
+
+  map.setCenter(midPoint);
+  map.setZoom(zoomLevel);
 }
 
 function getMidPoint(locations) {
@@ -195,51 +262,6 @@ function getZoomLevel(locations) {
   zoomLevel = Math.min(latZoomLevel, lngZoomLevel);
 
   return zoomLevel;
-}
-
-locateButton.addEventListener('click', () => {
-  let src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCSV5BXC93ll0igbOw23qAAzyEjN84KtPk&libraries=places&callback=initMapGeo';
-  let scriptMap = getNewScript(src);
-
-  let scriptMarkerCluster = document.createElement('script');
-  scriptMarkerCluster.src = 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js'
-
-  document.body.appendChild(scriptMarkerCluster);
-  document.body.appendChild(scriptMap);
-});
-
-searchButton.addEventListener('click', () => {
-  const locatorDiv = document.querySelector('.locator');
-  // removes all children
-  while (locatorDiv.firstChild) {
-      locatorDiv.removeChild(locatorDiv.firstChild);
-  }
-
-  locatorDiv.className = 'ui input focus locator';
-
-  let input = document.createElement('input');
-  input.id = 'autocomplete';
-  input.type = 'text';
-  input.placeholder = 'Search for Address';
-
-  locatorDiv.appendChild(input);
-
-  let src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCSV5BXC93ll0igbOw23qAAzyEjN84KtPk&libraries=places&callback=initMapSearch';
-  let scriptMap = getNewScript(src);
-
-  document.body.appendChild(scriptMap);
-});
-
-function getNewScript(src) {
-  const initScript = document.getElementById('initialMap');
-  document.body.removeChild(initScript);
-
-  let scriptMap = document.createElement('script');
-  scriptMap.async = true;
-  scriptMap.defer = true;
-  scriptMap.src = src;
-
-  return scriptMap;
 }
 
 /* Notes

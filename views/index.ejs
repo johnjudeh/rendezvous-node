@@ -12,12 +12,15 @@
       <div class='ui horizontal divider'>
         Add Friends
       </div>
-      <div class="ui buttons locator">
+      <div class="ui buttons locator" id='locator'>
         <button class="ui teal button geo locateButton">
           <i class="marker icon"></i>Locate
         </button>
         <div class="or"></div>
         <button class="ui grey button search">Search</button>
+      </div>
+      <div class='ui input focus locator hidden' id='search'>
+        <input id='autocomplete' type='text' placeholder='Search for Address'>
       </div>
     </div>
 
@@ -25,8 +28,9 @@
 </div>
 
 <script type="text/javascript" src='/js/maps.js'></script>
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 <script async defer id='initialMap'
-  src='https://maps.googleapis.com/maps/api/js?key=AIzaSyCSV5BXC93ll0igbOw23qAAzyEjN84KtPk&libraries=places&callback=initMap'>
+  src='https://maps.googleapis.com/maps/api/js?key=AIzaSyCSV5BXC93ll0igbOw23qAAzyEjN84KtPk&libraries=places&callback=initMapNew'>
 </script>
 
 <% include ./partials/footer %>

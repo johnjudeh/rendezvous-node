@@ -52,3 +52,7 @@ button.search {
 #autocomplete {
   text-align: center;
 }
+
+div.ui.hidden {
+  display: none;
+}
