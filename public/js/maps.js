@@ -1,7 +1,11 @@
 let map, infoWindow, pos, autocomplete, places;
 let countryRestrict = {'country': 'uk'};
 let locations = [
-  // {lat: 51.4955329, lng: -0.0765513 - (0.0038 * Math.pow(2, -1))}
+  // {lat: 51.4954622, lng: -0.07652579999999999},
+  // {lat: 51.5051007, lng: -0.01562920000003487},
+  // {lat: 51.5501741, lng: -0.003371000000015556}
+  // {lat: 51.4955329 + (0.00137 * Math.pow(2, 5.4)), lng: -0.0765513 + (0.0038 * Math.pow(2, 4))},
+  // {lat: 51.4955329 - (0.00137 * Math.pow(2, 4)), lng: -0.0765513 - (0.0038 * Math.pow(2, 4))}
   // {lat: 51.4955329, lng: -0.0765513}
 ];
 let locateButton = document.querySelector('button.locateButton');
@@ -9,7 +13,8 @@ let searchButton = document.querySelector('button.search');
 
 function initMapNew() {
   map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 51.5007, lng: -0.12406},
+    // center: {lat: 51.5007, lng: -0.12406},
+    center: {lat: 51.509, lng: -0.116},
     zoom: 12,
     mapTypeControl: false,
     streetViewControl: false
@@ -145,7 +150,7 @@ function initMapSearch() {
 function onPlaceChanged() {
   let place = autocomplete.getPlace();
 
-  console.log(place);
+  console.log(place.geometry.location.toJSON());
 
   if (place.geometry.location) {
     locations.push(place.geometry.location.toJSON());
@@ -197,8 +202,13 @@ function getMidPoint(locations) {
     lngs.push(location.lng);
   });
 
-  avgCoords.lat = average(lats)
-  avgCoords.lng = average(lngs)
+  maxLat = Math.max(...lats);
+  minLat = Math.min(...lats);
+  maxLng = Math.max(...lngs);
+  minLng = Math.min(...lngs);
+
+  avgCoords.lat = average([minLat, maxLat]);
+  avgCoords.lng = average([minLng, maxLng]);
 
   return avgCoords;
 }
@@ -240,8 +250,8 @@ function getZoomLevel(locations) {
   latRange = maxLat - minLat;
   lngRange = maxLng - minLng;
 
-  latZoomIndex = Math.round((Math.log(latRange) - Math.log(latIncrement)) / Math.log(2));
-  lngZoomIndex = Math.round((Math.log(lngRange) - Math.log(lngIncrement)) / Math.log(2));
+  latZoomIndex = Math.ceil((Math.log(latRange) - Math.log(latIncrement)) / Math.log(2));
+  lngZoomIndex = Math.ceil((Math.log(lngRange) - Math.log(lngIncrement)) / Math.log(2));
 
   if (latZoomIndex < 0) {
     latZoomLevel = 18;
