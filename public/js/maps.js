@@ -9,6 +9,8 @@ let locations = [
   // {lat: 51.4955329, lng: -0.0765513}
 ];
 let addresses = ['Flat 1, Amisha Court, SE1 3GH'];
+let spySrc = 'https://cdn2.iconfinder.com/data/icons/ninja/500/Ninja_4-512.png'
+let locatorOn = false;
 let locateButton = document.querySelector('button.locateButton');
 let searchButton = document.querySelector('button.search');
 
@@ -39,7 +41,9 @@ function geolocateUser(infoWindow) {
 
       locations.push(pos);
       hideLocatorButtons();
-      addFriendLocation();
+      addFriendHolder(spySrc);
+      createAutocomplete();
+      // addFriendLocation();
       createMarkerClusterer();
 
     }, () => {
@@ -70,17 +74,36 @@ function createSearchInput () {
   hideLocatorButtons();
 
   const searchDiv = document.querySelector('#search');
-  searchDiv.className = 'ui input focus locator';
+  searchDiv.classList.remove('hidden');
 }
 
 function hideLocatorButtons() {
   const locatorDiv = document.querySelector('#locator');
-  locatorDiv.className += ' hidden';
+  locatorDiv.classList.add('hidden');
 }
 
 function addFriendLocation() {
   const friendHolder = document.querySelector('.friendHolder');
   friendHolder.className = 'ui card locator friendHolder';
+}
+
+function addFriendHolder(imgSrc) {
+  const locatorParent = document.querySelector('.locatorParent');
+  const friendHolder = document.querySelector('#clone');
+  const fhCloned = friendHolder.cloneNode(true);
+  fhCloned.classList.remove('hidden');
+  fhCloned.id = '';
+
+  if (imgSrc) {
+    const img = fhCloned.childNodes[1].childNodes[1];
+    img.src = imgSrc;
+  }
+
+  if (!locatorOn) {
+    
+  }
+
+  locatorParent.insertBefore(fhCloned, friendHolder);
 }
 
 function initMapSearch() {
@@ -117,6 +140,7 @@ function onPlaceChanged() {
   if (place.geometry.location) {
     locations.push(place.geometry.location.toJSON());
     createMarkerClusterer();
+    addFriendHolder();
     // map.panTo(place.geometry.location);
     // map.setZoom(15);
     // search();
