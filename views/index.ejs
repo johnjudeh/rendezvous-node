@@ -1,36 +1,44 @@
 <% include ./partials/header %>
 
 <div class='ui container main'>
-  <h1>Maps Page</h1>
+  <%# <h1>Maps Page</h1> %>
   <div class='ui grid contianer'>
 
     <div class='eleven wide column map'>
       <div id='map'></div>
     </div>
 
-    <div class='five wide column locatorParent'>
-      <div class='ui horizontal divider'>
-        Add Friends
-      </div>
-      <div class="ui buttons locator" id='locator'>
-        <button class="ui teal button geo locateButton">
-          <i class="marker icon"></i>Locate
-        </button>
-        <div class="or"></div>
-        <button class="ui grey button search">Search</button>
-      </div>
-      <div class='ui input focus locator hidden' id='search'>
-        <input id='autocomplete' type='text' placeholder='Search for Address'>
-      </div>
-      <div class='ui card locator friendHolder hidden' id='clone'>
-        <div class='content'>
-          <img class='ui avatar image' src='https://raw.githubusercontent.com/Ashwinvalento/cartoon-avatar/master/lib/images/female/68.png'>
-          <p class='address'>Flat 1, Amisha Court, SE1 3GH</p>
+    <div class='five wide column'>
+
+      <div class='row locatorParent'>
+        <div class='ui horizontal divider'>
+          Add Friends
+        </div>
+        <div class="ui buttons locator" id='locator'>
+          <button class="ui teal button geo locateButton">
+            <i class="marker icon"></i>Locate
+          </button>
+          <div class="or"></div>
+          <button class="ui grey button search">Search</button>
+        </div>
+        <div class='ui input focus locator hidden' id='search'>
+          <input id='autocomplete' type='text' placeholder='Search for Address'>
+        </div>
+        <div class='ui card locator friendHolder hidden' id='clone'>
+          <div class='content'>
+            <img class='ui avatar image' src='https://raw.githubusercontent.com/Ashwinvalento/cartoon-avatar/master/lib/images/female/68.png'>
+            <div class='ui container addressDiv'>
+              <p class='address'>Flat 1, Amisha Court, SE1 3GH</p>
+            </div>
+          </div>
         </div>
       </div>
-      <div class='ui locator'>
-        <button class="ui yellow button funFinder">Yellow</button>
+      <div class='row'>
+        <div class='ui locator hidden' id='funFinderDiv'>
+          <button class="ui yellow button funFinder">Find me fun</button>
+        </div>
       </div>
+
     </div>
 
   </div>

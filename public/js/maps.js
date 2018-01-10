@@ -82,11 +82,6 @@ function hideLocatorButtons() {
   locatorDiv.classList.add('hidden');
 }
 
-function addFriendLocation() {
-  const friendHolder = document.querySelector('.friendHolder');
-  friendHolder.className = 'ui card locator friendHolder';
-}
-
 function addFriendHolder(imgSrc) {
   const locatorParent = document.querySelector('.locatorParent');
   const friendHolder = document.querySelector('#clone');
@@ -99,8 +94,9 @@ function addFriendHolder(imgSrc) {
     img.src = imgSrc;
   }
 
-  if (!locatorOn) {
-    
+  if (locations.length === 2) {
+    const funFinderDiv = document.getElementById('funFinderDiv');
+    funFinderDiv.classList.remove('hidden');
   }
 
   locatorParent.insertBefore(fhCloned, friendHolder);
@@ -134,8 +130,6 @@ function initMapSearch() {
 
 function onPlaceChanged() {
   let place = autocomplete.getPlace();
-
-  console.log(place.geometry.location.toJSON());
 
   if (place.geometry.location) {
     locations.push(place.geometry.location.toJSON());
