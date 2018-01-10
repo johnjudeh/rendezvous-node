@@ -1,4 +1,4 @@
-body , .ui.menu , .ui.button {
+body , .ui.menu , .ui.button , h1 {
   font-family: 'Roboto';
   font-weight: 400;
   background: rgb(251, 255, 254);

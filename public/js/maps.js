@@ -9,10 +9,12 @@ let locations = [
   // {lat: 51.4955329, lng: -0.0765513}
 ];
 let addresses = ['Flat 1, Amisha Court, SE1 3GH'];
+let funMarkers = [];
 let spySrc = 'https://cdn2.iconfinder.com/data/icons/ninja/500/Ninja_4-512.png'
-let locatorOn = false;
-let locateButton = document.querySelector('button.locateButton');
-let searchButton = document.querySelector('button.search');
+const MARKER_PATH = 'https://developers.google.com/maps/documentation/javascript/images/marker_green';
+const locateButton = document.querySelector('button.locateButton');
+const searchButton = document.querySelector('button.search');
+const funButton = document.querySelector('.funFinder');
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -20,14 +22,17 @@ function initMap() {
     center: {lat: 51.509, lng: -0.116},
     zoom: 12,
     mapTypeControl: false,
-    streetViewControl: false
+    streetViewControl: false,
+    backgroundColor: 'rgb(242, 255, 254)',
+    draggable: false
     // zoomControl: false,
   });
 
   infoWindow = new google.maps.InfoWindow;
 
-  locateButton.addEventListener('click', () => geolocateUser(infoWindow));
+  locateButton.addEventListener('click', () => geolocateUser(infoWindow), {once: true});
   searchButton.addEventListener('click', () => createAutocomplete(infoWindow));
+  funButton.addEventListener('click', search);
 }
 
 function geolocateUser(infoWindow) {
@@ -143,6 +148,54 @@ function onPlaceChanged() {
   }
 }
 
+function search() {
+
+  const search = {
+    // bounds: map.getBounds(),
+    location: map.getCenter(),
+    radius: 800,                // Upto 50 000
+    types: ['lodgings'],
+    openNow: true,
+    rankBy: google.maps.places.RankBy.PROMINENCE
+  }
+
+  places.nearbySearch(search, (results, status) => {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      // clearResults();
+      // clearMarkers();
+
+      // Create a marker for each hotel found, and
+      // assign a letter of the alphabetic to each marker icon.
+      for (var i = 0; i < results.length; i++) {
+        let markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
+        let markerIcon = MARKER_PATH + markerLetter + '.png';
+        // Use marker animation to drop the icons incrementally on the map.
+        funMarkers[i] = new google.maps.Marker({
+          position: results[i].geometry.location,
+          animation: google.maps.Animation.DROP,
+          icon: markerIcon
+        });
+        // If the user clicks a hotel marker, show the details of that hotel
+        // in an info window.
+        funMarkers[i].placeResult = results[i];
+        // google.maps.event.addListener(markers[i], 'click', showInfoWindow);
+        setTimeout(dropMarker(i), i * 100);
+        // addResult(results[i], i);
+      }
+    } else {
+      console.log('oh no!', status);
+    }
+  });
+
+  // setTimeout(() => map.setZoom(), 500)
+}
+
+function dropMarker(i) {
+  return function() {
+    funMarkers[i].setMap(map);
+  };
+}
+
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.setPosition(pos);
   infoWindow.setContent(browserHasGeolocation ?
@@ -158,7 +211,8 @@ function createMarkerClusterer(){
   let markers = locations.map((location, i) => {
     return new google.maps.Marker({
       position: location,
-      label: labels[i % labels.length]
+      label: labels[i % labels.length],
+      animation: google.maps.Animation.DROP
     });
   })
 
