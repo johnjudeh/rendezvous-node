@@ -9,9 +9,41 @@ let locations = [
   // {lat: 51.4955329, lng: -0.0765513}
 ];
 let addresses = ['Flat 1, Amisha Court, SE1 3GH'];
+let funLocations = [];
 let funMarkers = [];
+let funPlaceTypes = [
+  'amusement_park',
+  'aquarium',
+  'art_gallery',
+  'bakery',
+  'bar',
+  'beauty_salon',
+  'bicycle_store',
+  'book_store',
+  'bowling_alley',
+  'cafe',
+  'campground',
+  'car_rental',
+  'casino',
+  'gym',
+  'hair_care',
+  'library',
+  'lodging',
+  'movie_theater',
+  'museum',
+  'night_club',
+  'park',
+  'restaurant',
+  'rv_park',
+  'shopping_mall',
+  'spa',
+  'stadium',
+  'travel_agency',
+  'zoo'
+];
 let spySrc = 'https://cdn2.iconfinder.com/data/icons/ninja/500/Ninja_4-512.png'
 const MARKER_PATH = 'https://developers.google.com/maps/documentation/javascript/images/marker_green';
+const hostnameRegexp = new RegExp('^https?://.+?/');
 const locateButton = document.querySelector('button.locateButton');
 const searchButton = document.querySelector('button.search');
 const funButton = document.querySelector('.funFinder');
@@ -23,12 +55,14 @@ function initMap() {
     zoom: 12,
     mapTypeControl: false,
     streetViewControl: false,
-    backgroundColor: 'rgb(242, 255, 254)',
-    draggable: false
+    backgroundColor: 'rgb(242, 255, 254)'
+    // draggable: false,
     // zoomControl: false,
   });
 
-  infoWindow = new google.maps.InfoWindow;
+  infoWindow = new google.maps.InfoWindow({
+    content: document.getElementById('info-content')
+  });
 
   locateButton.addEventListener('click', () => geolocateUser(infoWindow), {once: true});
   searchButton.addEventListener('click', () => createAutocomplete(infoWindow));
@@ -140,9 +174,6 @@ function onPlaceChanged() {
     locations.push(place.geometry.location.toJSON());
     createMarkerClusterer();
     addFriendHolder();
-    // map.panTo(place.geometry.location);
-    // map.setZoom(15);
-    // search();
   } else {
     document.getElementById('autocomplete').placeholder = 'Enter a city';
   }
@@ -151,10 +182,9 @@ function onPlaceChanged() {
 function search() {
 
   const search = {
-    // bounds: map.getBounds(),
     location: map.getCenter(),
-    radius: 800,                // Upto 50 000
-    types: ['lodgings'],
+    radius: 900,                // Upto 50 000
+    types: funPlaceTypes,
     openNow: true,
     rankBy: google.maps.places.RankBy.PROMINENCE
   }
@@ -166,7 +196,8 @@ function search() {
 
       // Create a marker for each hotel found, and
       // assign a letter of the alphabetic to each marker icon.
-      for (var i = 0; i < results.length; i++) {
+      // for (var i = 0; i < results.length; i++) {
+      for (let i = 0; i < 5; i++) {
         let markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
         let markerIcon = MARKER_PATH + markerLetter + '.png';
         // Use marker animation to drop the icons incrementally on the map.
@@ -175,25 +206,92 @@ function search() {
           animation: google.maps.Animation.DROP,
           icon: markerIcon
         });
+
+        funLocations.push(results[i].geometry.location.toJSON());
         // If the user clicks a hotel marker, show the details of that hotel
         // in an info window.
         funMarkers[i].placeResult = results[i];
-        // google.maps.event.addListener(markers[i], 'click', showInfoWindow);
+        google.maps.event.addListener(funMarkers[i], 'click', showInfoWindow);
         setTimeout(dropMarker(i), i * 100);
         // addResult(results[i], i);
       }
     } else {
-      console.log('oh no!', status);
+      console.log('Oh no!', status);
     }
   });
 
-  // setTimeout(() => map.setZoom(), 500)
+  // Zooms into locations
+  setTimeout(() => {
+    map.setZoom(getZoomLevel(funLocations));
+    map.panTo(getMidPoint(funLocations));
+  }, 2300)
 }
 
 function dropMarker(i) {
   return function() {
     funMarkers[i].setMap(map);
   };
+}
+
+function showInfoWindow() {
+  let marker = this;
+  places.getDetails({placeId: marker.placeResult.place_id},
+      (place, status) => {
+        if (status !== google.maps.places.PlacesServiceStatus.OK) {
+          return;
+        }
+        infoWindow.open(map, marker);
+        buildIWContent(place);
+      });
+}
+
+function buildIWContent(place) {
+  document.getElementById('iw-icon').innerHTML = '<img class="funPlaceIcon" ' +
+      'src="' + place.icon + '"/>';
+  document.getElementById('iw-url').innerHTML = '<b><a href="' + place.url +
+      '">' + place.name + '</a></b>';
+  document.getElementById('iw-address').textContent = place.vicinity;
+
+  if (place.formatted_phone_number) {
+    document.getElementById('iw-phone-row').style.display = '';
+    document.getElementById('iw-phone').textContent =
+        place.formatted_phone_number;
+  } else {
+    document.getElementById('iw-phone-row').style.display = 'none';
+  }
+
+  // Assign a five-star rating to the hotel, using a black star ('&#10029;')
+  // to indicate the rating the hotel has earned, and a white star ('&#10025;')
+  // for the rating points not achieved.
+  if (place.rating) {
+    let ratingHtml = '';
+    for (let i = 0; i < 5; i++) {
+      if (place.rating < (i + 0.5)) {
+        ratingHtml += '&#10025;';
+      } else {
+        ratingHtml += '&#10029;';
+      }
+    document.getElementById('iw-rating-row').style.display = '';
+    document.getElementById('iw-rating').innerHTML = ratingHtml;
+    }
+  } else {
+    document.getElementById('iw-rating-row').style.display = 'none';
+  }
+
+  // The regexp isolates the first part of the URL (domain plus subdomain)
+  // to give a short URL for displaying in the info window.
+  if (place.website) {
+    let fullUrl = place.website;
+    let website = hostnameRegexp.exec(place.website);
+    if (website === null) {
+      website = 'http://' + place.website + '/';
+      fullUrl = website;
+    }
+    document.getElementById('iw-website-row').style.display = '';
+    document.getElementById('iw-website').textContent = website;
+  } else {
+    document.getElementById('iw-website-row').style.display = 'none';
+  }
 }
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
