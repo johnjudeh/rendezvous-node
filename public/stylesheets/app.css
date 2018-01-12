@@ -4,6 +4,11 @@ body , .ui.menu , .ui.button , h1 {
   background: rgb(251, 255, 254);
 }
 
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
 .container.main {
   margin-top: 8%;
   height: 100%;

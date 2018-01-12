@@ -1,4 +1,4 @@
-let map, infoWindow, pos, autocomplete, places;
+let map, infoWindow, pos, autocomplete, places, geocoder;
 let countryRestrict = {'country': 'uk'};
 let locations = [
   // {lat: 51.4954622, lng: -0.07652579999999999},
@@ -64,12 +64,14 @@ function initMap() {
     content: document.getElementById('info-content')
   });
 
-  locateButton.addEventListener('click', () => geolocateUser(infoWindow), {once: true});
-  searchButton.addEventListener('click', () => createAutocomplete(infoWindow));
+  geocoder = new google.maps.Geocoder();
+
+  locateButton.addEventListener('click', geolocateUser, {once: true});
+  searchButton.addEventListener('click', createAutocomplete);
   funButton.addEventListener('click', search);
 }
 
-function geolocateUser(infoWindow) {
+function geolocateUser() {
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(position => {
@@ -79,10 +81,11 @@ function geolocateUser(infoWindow) {
       };
 
       locations.push(pos);
+
       hideLocatorButtons();
-      addFriendHolder(spySrc);
+      addFriendHolder(pos, spySrc);
+
       createAutocomplete();
-      // addFriendLocation();
       createMarkerClusterer();
 
     }, () => {
@@ -94,7 +97,7 @@ function geolocateUser(infoWindow) {
   }
 }
 
-function createAutocomplete(infoWindow) {
+function createAutocomplete() {
   // replaces locations buttons with search bar
   createSearchInput();
 
@@ -121,12 +124,32 @@ function hideLocatorButtons() {
   locatorDiv.classList.add('hidden');
 }
 
-function addFriendHolder(imgSrc) {
+function addFriendHolder(location, imgSrc) {
   const locatorParent = document.querySelector('.locatorParent');
   const friendHolder = document.querySelector('#clone');
   const fhCloned = friendHolder.cloneNode(true);
+
   fhCloned.classList.remove('hidden');
   fhCloned.id = '';
+
+  geocoder.geocode({
+    location: location
+    // fill more into me
+  }, (results, status) => {
+    if (status === google.maps.GeocoderStatus.OK) {
+      let address;
+
+      if (results[0].formatted_address) {
+        address = results[0].formatted_address;
+      } else {
+        // If first result has no formatted address
+        address = 'Not available...';
+      }
+
+      const addressParagraph = fhCloned.childNodes[1].childNodes[3].childNodes[1];
+      addressParagraph.textContent = address;
+    }
+  })
 
   if (imgSrc) {
     const img = fhCloned.childNodes[1].childNodes[1];
@@ -141,43 +164,21 @@ function addFriendHolder(imgSrc) {
   locatorParent.insertBefore(fhCloned, friendHolder);
 }
 
-function initMapSearch() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 51.5007, lng: -0.12406},
-    zoom: 12,
-    mapTypeControl: false,
-    panControl: false,
-    zoomControl: false,
-    streetViewControl: false
-  });
-
-  infoWindow = new google.maps.InfoWindow({
-    content: document.getElementById('info-content')
-  });
-
-  autocomplete = new google.maps.places.Autocomplete(
-      /* @type {!HTMLInputElement} */ (
-        document.getElementById('autocomplete')), {
-        types: [],
-        // types: ['address'],
-        componentRestrictions: countryRestrict
-      });
-  places = new google.maps.places.PlacesService(map);
-
-  autocomplete.addListener('place_changed', onPlaceChanged);
-}
-
 function onPlaceChanged() {
   let place = autocomplete.getPlace();
 
   if (place.geometry.location) {
-    locations.push(place.geometry.location.toJSON());
+    let location = place.geometry.location.toJSON();
+    locations.push(location);
     createMarkerClusterer();
-    addFriendHolder();
+    addFriendHolder(location);
   } else {
     document.getElementById('autocomplete').placeholder = 'Enter a city';
   }
 }
+
+// Add a bouncing marker for the chosen area can first implement
+// randomly before figuring out how to really do it
 
 function search() {
 
