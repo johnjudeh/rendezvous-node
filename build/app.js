@@ -3,8 +3,6 @@
 var express = require('express'),
     app = express();
 
-// import serviceWorker from './sw/index.js'
-
 app.set('view engine', 'ejs');
 // Sets directory to serve static files
 // can be accessed from root route eg. /stylesheets/app.css
