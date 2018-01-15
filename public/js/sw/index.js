@@ -18,13 +18,23 @@ function registerServiceWorker() {
 
     if (reg.installing) {
       console.log('Service Worker is Installing!');
+      trackInstalling(reg.installing);
       return;
     }
 
     reg.addEventListener('updatefound', () => {
       console.log('Service Worker is Installing!');
+      trackInstalling(reg.installing);
     })
 
   })
 
+}
+
+function trackInstalling(worker) {
+  worker.addEventListener('statechange', () => {
+    if (worker.state === 'installed'){
+      console.log('Service Worker is Waiting');
+    }
+  })
 }

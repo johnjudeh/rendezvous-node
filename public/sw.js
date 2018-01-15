@@ -1,4 +1,4 @@
-let staticCacheName = 'rendezvous-static-v3';
+let staticCacheName = 'rendezvous-static-v4';
 let cacheWhiteList = [
   staticCacheName
 ]
@@ -43,31 +43,31 @@ self.addEventListener('activate', event => {
   )
 })
 
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.open(staticCacheName).then(cache => {
-      return cache.match(event.request).then(response => {
-        // Do not need updating as they are static - except during development
-        // In development, the sw cache name should be changed for any updates
-        return response || fetch(event.request);
-      })
-    })
-  );
-
-  // The below is for if I want different origins to respond in different ways
-
-  // let requestURL = new URL(event.request.url);
-  //
-  // if (requestURL.origin === location.origin) {
-  //   event.respondWith(
-  //     caches.open(staticCacheName).then((cache) => {
-  //       return cache.match(event.request).then(response => {
-  //         // Do not need updating as they are static - except during development
-  //         // In development, the cache name should be changed
-  //         return response || fetch(event.request);
-  //       })
-  //     })
-  //   );
-  //   return;
-  // }
-})
+// self.addEventListener('fetch', event => {
+//   event.respondWith(
+//     caches.open(staticCacheName).then(cache => {
+//       return cache.match(event.request).then(response => {
+//         // Do not need updating as they are static - except during development
+//         // In development, the sw cache name should be changed for any updates
+//         return response || fetch(event.request);
+//       })
+//     })
+//   );
+//
+//   // The below is for if I want different origins to respond in different ways
+//
+//   // let requestURL = new URL(event.request.url);
+//   //
+//   // if (requestURL.origin === location.origin) {
+//   //   event.respondWith(
+//   //     caches.open(staticCacheName).then((cache) => {
+//   //       return cache.match(event.request).then(response => {
+//   //         // Do not need updating as they are static - except during development
+//   //         // In development, the cache name should be changed
+//   //         return response || fetch(event.request);
+//   //       })
+//   //     })
+//   //   );
+//   //   return;
+//   // }
+// })
