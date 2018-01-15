@@ -1,8 +1,11 @@
-let staticCacheName = 'rendezvous-static-v1';
+let staticCacheName = 'rendezvous-static-v3';
+let cacheWhiteList = [
+  staticCacheName
+]
 
-self.addEventListener('install', (event) => {
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(staticCacheName).then((cache) => {
+    caches.open(staticCacheName).then(cache => {
       return cache.addAll([
         '/',
         '/maps',
@@ -16,6 +19,7 @@ self.addEventListener('install', (event) => {
 
         // Google API fetches return 'Access-Control-Allow-Origin' errors - should check whether Google allows caching
 
+
         // 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js',
         // 'https://developers.google.com/maps/documentation/javascript/images/marker_green',
         // 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
@@ -24,3 +28,46 @@ self.addEventListener('install', (event) => {
     })
   )
 });
+
+// Event fires when new sw is intalled and ready to take over page
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return cacheNames.filter(cacheName => {
+        return !cacheWhiteList.includes(cacheName);
+      }).map(cacheName => {
+        console.log('Deleting:', cacheName);
+        return caches.delete(cacheName);
+      })
+    })
+  )
+})
+
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.open(staticCacheName).then(cache => {
+      return cache.match(event.request).then(response => {
+        // Do not need updating as they are static - except during development
+        // In development, the sw cache name should be changed for any updates
+        return response || fetch(event.request);
+      })
+    })
+  );
+
+  // The below is for if I want different origins to respond in different ways
+
+  // let requestURL = new URL(event.request.url);
+  //
+  // if (requestURL.origin === location.origin) {
+  //   event.respondWith(
+  //     caches.open(staticCacheName).then((cache) => {
+  //       return cache.match(event.request).then(response => {
+  //         // Do not need updating as they are static - except during development
+  //         // In development, the cache name should be changed
+  //         return response || fetch(event.request);
+  //       })
+  //     })
+  //   );
+  //   return;
+  // }
+})

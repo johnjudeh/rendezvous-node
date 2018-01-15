@@ -1,15 +1,30 @@
 // export default
 
-serviceWorker();
+registerServiceWorker();
 
-function serviceWorker() {
+function registerServiceWorker() {
 
   if (!navigator.serviceWorker) return
 
-  navigator.serviceWorker.register('/sw.js').then((reg) => {
-    console.log('Service worker reigistered: ', reg);
-  }).catch((err) => {
-    console.log('Service worker not registered: ', err);
+  navigator.serviceWorker.register('/sw.js').then(reg => {
+    if (!navigator.serviceWorker.controller) {
+      return;
+    }
+
+    if (reg.waiting) {
+      console.log('Service Worker is Waiting');
+      return;
+    }
+
+    if (reg.installing) {
+      console.log('Service Worker is Installing!');
+      return;
+    }
+
+    reg.addEventListener('updatefound', () => {
+      console.log('Service Worker is Installing!');
+    })
+
   })
 
 }
