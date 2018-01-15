@@ -41,7 +41,7 @@ let funPlaceTypes = [
   'travel_agency',
   'zoo'
 ];
-let spySrc = 'https://cdn2.iconfinder.com/data/icons/ninja/500/Ninja_4-512.png'
+let spySrc = '/avatars/ninja.png'
 const MARKER_PATH = 'https://developers.google.com/maps/documentation/javascript/images/marker_green';
 const hostnameRegexp = new RegExp('^https?://.+?/');
 const locateButton = document.querySelector('button.locateButton');

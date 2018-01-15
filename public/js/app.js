@@ -16,5 +16,5 @@ app.get('/maps', (req, res) => {
 
 app.listen(8080, () => {
   console.log('Mapper Server ---> ON');
-  console.log('listening on localhost:8080');
+  console.log('Listening on localhost:8080');
 });
