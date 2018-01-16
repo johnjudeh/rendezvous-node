@@ -70,7 +70,7 @@ button.search {
   border-color: #4FB2AC;
 }
 
-div.ui.hidden {
+.ui.hidden {
   display: none;
 }
 

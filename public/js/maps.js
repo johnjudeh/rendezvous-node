@@ -72,6 +72,7 @@ function initMap() {
 }
 
 function geolocateUser() {
+  loadingGeolocation();
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(position => {
@@ -101,15 +102,18 @@ function createAutocomplete() {
   // replaces locations buttons with search bar
   createSearchInput();
 
+  const autocompleteInput = document.getElementById('autocomplete');
+  autocompleteInput.focus();
+
   autocomplete = new google.maps.places.Autocomplete(
-    document.getElementById('autocomplete'), {
+    autocompleteInput, {
     types: [],
     // types: ['address'],
     componentRestrictions: countryRestrict
   });
   places = new google.maps.places.PlacesService(map);
 
-  autocomplete.addListener('place_changed', onPlaceChanged);
+  autocomplete.addListener('place_changed', () => onPlaceChanged(autocompleteInput));
 }
 
 function createSearchInput () {
@@ -119,9 +123,20 @@ function createSearchInput () {
   searchDiv.classList.remove('hidden');
 }
 
+function loadingGeolocation () {
+  const locateButton = document.querySelector('.locateButton');
+  locateButton.classList.add('loading');
+}
+
+// Add transition animations!
+
 function hideLocatorButtons() {
   const locatorDiv = document.querySelector('#locator');
-  locatorDiv.classList.add('hidden');
+  const locateButton = document.querySelector('.locateButton');
+  const orDiv = document.querySelector('.or');
+  locateButton.classList.add('hidden');
+  orDiv.classList.add('hidden');
+  setTimeout(() => locatorDiv.classList.add('hidden'), 1500);
 }
 
 function addFriendHolder(location, imgSrc) {
@@ -164,8 +179,11 @@ function addFriendHolder(location, imgSrc) {
   locatorParent.insertBefore(fhCloned, friendHolder);
 }
 
-function onPlaceChanged() {
+function onPlaceChanged(inputElement) {
   let place = autocomplete.getPlace();
+
+  inputElement.value = '';
+  inputElement.focus();
 
   if (place.geometry.location) {
     let location = place.geometry.location.toJSON();
