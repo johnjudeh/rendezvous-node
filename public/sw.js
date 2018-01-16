@@ -49,7 +49,11 @@ self.addEventListener('fetch', event => {
       return cache.match(event.request).then(response => {
         // Do not need updating as they are static - except during development
         // In development, the sw cache name should be changed for any updates
-        return response || fetch(event.request);
+
+        return response || fetch(event.request).then((networkResponse) => {
+          console.log(networkResponse);
+          return networkResponse;
+        });
       })
     })
   );

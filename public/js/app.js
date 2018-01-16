@@ -1,5 +1,17 @@
 const express = require('express'),
-      app = express();
+      app     = express(),
+
+      // to be used in .static when you version filenames based on content
+      options = {
+        etag: true,
+        // immutable: true,
+        // maxAge: 31536000,
+        setHeaders: (res, path, stat) => {
+          res.set({
+            'Cache-Control': 'no-cache'
+          })
+        }
+      };
 
 app.set('view engine', 'ejs');
 // Sets directory to serve static files
