@@ -7,7 +7,11 @@ mongoose.connect('mongodb://localhost/rendez_vous');
 const userSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
-
+  dob: Number,
+  address: Object,
+  email: String,
+  interests: Array,
+  lastKnownLocation: Object
 });
 
 const User = mongoose.model('User', userSchema);
