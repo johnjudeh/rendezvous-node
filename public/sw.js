@@ -19,7 +19,6 @@ self.addEventListener('install', event => {
 
         // Google API fetches return 'Access-Control-Allow-Origin' errors - should check whether Google allows caching
 
-
         // 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js',
         // 'https://developers.google.com/maps/documentation/javascript/images/marker_green',
         // 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
@@ -43,38 +42,39 @@ self.addEventListener('activate', event => {
   )
 })
 
-// self.addEventListener('fetch', event => {
-//   event.respondWith(
-//     caches.open(staticCacheName).then(cache => {
-//       return cache.match(event.request).then(response => {
-//         // Do not need updating as they are static - except during development
-//         // In development, the sw cache name should be changed for any updates
-//
-//         return response || fetch(event.request).then((networkResponse) => {
-//           console.log(networkResponse);
-//           return networkResponse;
-//         });
-//       })
-//     })
-//   );
-//
-//   // The below is for if I want different origins to respond in different ways
-//
-//   // let requestURL = new URL(event.request.url);
-//   //
-//   // if (requestURL.origin === location.origin) {
-//   //   event.respondWith(
-//   //     caches.open(staticCacheName).then((cache) => {
-//   //       return cache.match(event.request).then(response => {
-//   //         // Do not need updating as they are static - except during development
-//   //         // In development, the cache name should be changed
-//   //         return response || fetch(event.request);
-//   //       })
-//   //     })
-//   //   );
-//   //   return;
-//   // }
-// })
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.open(staticCacheName).then(cache => {
+      return cache.match(event.request).then(response => {
+        // Do not need updating as they are static - except during development
+        // In development, the sw cache name should be changed for any updates
+
+        return response || fetch(event.request).then((networkResponse) => {
+          // then statement can be deleted after development
+          // console.log(networkResponse);
+          return networkResponse;
+        });
+      })
+    })
+  );
+
+  // The below is for if I want different origins to respond in different ways
+
+  // let requestURL = new URL(event.request.url);
+  //
+  // if (requestURL.origin === location.origin) {
+  //   event.respondWith(
+  //     caches.open(staticCacheName).then((cache) => {
+  //       return cache.match(event.request).then(response => {
+  //         // Do not need updating as they are static - except during development
+  //         // In development, the cache name should be changed
+  //         return response || fetch(event.request);
+  //       })
+  //     })
+  //   );
+  //   return;
+  // }
+})
 
 // Awaits message to update service worker
 self.addEventListener('message', (event) => {

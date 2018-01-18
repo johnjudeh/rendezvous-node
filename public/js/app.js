@@ -1,17 +1,20 @@
-const express = require('express'),
-      app     = express(),
+const mongoose  = require('mongoose'),
+      express   = require('express'),
+      app       = express();
 
-      // to be used in .static when you version filenames based on content
-      options = {
-        etag: true,
-        // immutable: true,
-        // maxAge: 31536000,
-        setHeaders: (res, path, stat) => {
-          res.set({
-            'Cache-Control': 'no-cache'
-          })
-        }
-      };
+mongoose.connect('mongodb://localhost/rendez_vous');
+
+const userSchema = new mongoose.Schema({
+  firstName: String,
+  lastName: String,
+
+});
+
+const User = mongoose.model('User', userSchema);
+
+// SHOULDN'T NEED EITHER DUE TO NEW VERSION
+// mongoose.Promise = global.Promise;
+// mongoose.connect("mongodb://localhost/yelp_camp", {useMongoClient: true});
 
 app.set('view engine', 'ejs');
 // Sets directory to serve static files
@@ -30,3 +33,18 @@ app.listen(8080, () => {
   console.log('Mapper Server ---> ON');
   console.log('Listening on localhost:8080');
 });
+
+
+// ARCHIVES - USE ME LATER
+
+// To be used in .static when you version filenames based on content
+// options = {
+//   etag: true,
+//   // immutable: true,
+//   // maxAge: 31536000,
+//   setHeaders: (res, path, stat) => {
+//     res.set({
+//       'Cache-Control': 'no-cache'
+//     })
+//   }
+// };

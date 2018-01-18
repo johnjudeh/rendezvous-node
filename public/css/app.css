@@ -126,3 +126,12 @@ button.search {
   cursor: pointer;
   margin-left: 2%;
 }
+
+.ui.shrink {
+  width: 2%;
+  flex: none !important;
+  min-width: 0%;
+  transition-property: all;
+  transition-duration: 1s;
+  transition-timing-function: ease;
+}

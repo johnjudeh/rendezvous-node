@@ -86,7 +86,8 @@ function geolocateUser() {
       hideLocatorButtons();
       addFriendHolder(pos, spySrc);
 
-      createAutocomplete();
+      // Waits till the locator button animation ends
+      setTimeout(() => createAutocomplete(), 1000);
       createMarkerClusterer();
 
     }, () => {
@@ -134,9 +135,11 @@ function hideLocatorButtons() {
   const locatorDiv = document.querySelector('#locator');
   const locateButton = document.querySelector('.locateButton');
   const orDiv = document.querySelector('.or');
-  locateButton.classList.add('hidden');
-  orDiv.classList.add('hidden');
-  setTimeout(() => locatorDiv.classList.add('hidden'), 1500);
+
+  locateButton.classList.remove('loading', 'geo');
+  locateButton.textContent = '';
+  locateButton.classList.add('shrink');
+  setTimeout(() => locatorDiv.classList.add('hidden'), 1000);
 }
 
 function addFriendHolder(location, imgSrc) {
