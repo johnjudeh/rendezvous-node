@@ -28,7 +28,7 @@ let funPlaceTypes = [
   'gym',
   'hair_care',
   'library',
-  'lodging',
+  // 'lodging',
   'movie_theater',
   'museum',
   'night_club',
@@ -156,6 +156,7 @@ function addFriendHolder(location, imgSrc) {
   }, (results, status) => {
     if (status === google.maps.GeocoderStatus.OK) {
       let address;
+      console.log(results);
 
       if (results[0].formatted_address) {
         address = results[0].formatted_address;

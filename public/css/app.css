@@ -108,23 +108,25 @@ button.search {
   margin-left: 35%;
   margin-right: 35%;
   width: 30%;
+  display: flex;
   min-width: min-content;
   background-color: #323232;
   color: rgb(251, 255, 254);
 }
 
-.toastMessage {
-  display: contents;
+.ui.message p.toastMessage {
+  margin: auto;
+  margin-left: 2px;
 }
 
-.toastButton {
+.ui.message > .toastButton {
   background: none;
   border: none;
   color: #FF5252;
   text-transform: uppercase;
   float: right;
   cursor: pointer;
-  margin-left: 2%;
+  margin: auto 1px;
 }
 
 .ui.shrink {
@@ -134,4 +136,22 @@ button.search {
   transition-property: all;
   transition-duration: 1s;
   transition-timing-function: ease;
+}
+
+div.ui.formDiv {
+  width: 47%;
+}
+
+.ui.horizontal.divider {
+  margin-top: 7%;
+}
+
+.ui.formButtonDiv {
+  margin-top: 7%;
+  width: 320px;
+}
+
+.ui.button.formButton {
+  width: 150px;
+  margin: 0px 4px;
 }
