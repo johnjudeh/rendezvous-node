@@ -1,7 +1,6 @@
 <% include partials/header %>
 
 <div class='ui container main formDiv'>
-  <%# <h1>Fill in your details</h1> %>
 
   <% if (error && error.length > 0) { %>
     <form class='ui error form' action='/register' method='post'>
@@ -306,10 +305,12 @@
         </div>
       </div>
     </div>
+
     <div class='ui container formButtonDiv'>
-      <button class='ui teal button formButton' tabindex='0'>Register</button>
-      <a class='ui grey button formButton' href='/'>Go Back</a>
+      <a class='ui grey button formButton' href='/'>Back</a>
+      <button class='ui teal button formButton' tabindex='0'>Next</button>
     </div>
+
   </form>
 </div>
 

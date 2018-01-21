@@ -1,7 +1,6 @@
 <% include partials/header %>
 
 <div class='ui container main loginFormDiv'>
-  <%# <h1>You've reached the login route!</h1> %>
 
   <% if (error && error.length > 0) { %>
     <form class='ui error form' action='/login' method='post'>
@@ -28,6 +27,7 @@
       <label>Password</label>
       <input type='password' name='password' placeholder='********' autocomplete='current-password'>
     </div>
+
     <div class='ui container formButtonDiv'>
       <button class='ui teal button formButton' tabindex='0'>Submit</button>
       <a class='ui grey button formButton' href='/'>Go Back</a>

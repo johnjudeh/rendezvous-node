@@ -1,12 +1,12 @@
-const passportLocalMongoose = require('passport-local-mongoose');
-      expressSession        = require('express-session'),
-      LocalStrategy         = require('passport-local').Strategy,
-      bodyParser            = require('body-parser'),
-      passport              = require('passport'),
-      mongoose              = require('mongoose'),
-      express               = require('express'),
-      flash                 = require('connect-flash'),
-      app                   = express();
+const passportLocalMongoose  = require('passport-local-mongoose'),
+      expressSession         = require('express-session'),
+      LocalStrategy          = require('passport-local').Strategy,
+      bodyParser             = require('body-parser'),
+      passport               = require('passport'),
+      mongoose               = require('mongoose'),
+      express                = require('express'),
+      flash                  = require('connect-flash'),
+      app                    = express();
 
 // mongoose.connect('mongodb://localhost/rendez_vous').then(() => {
 mongoose.connect('mongodb://localhost/demo').then(() => {
@@ -27,19 +27,18 @@ const userSchema = new mongoose.Schema({
     city: String,
     postCode: String,
     country: String
-  },
+  }
   // interests: Array,
   // lastKnownLocation: Object
 });
 // Adds the needed passport methods to Schema
-userSchema.plugin(passportLocalMongoose
+// userSchema.plugin(passportLocalMongoose
+userSchema.plugin(passportLocalMongoose);
   // , {
-  // usernameField: 'email',
+  // usernameField: 'email'
   // usernameLowerCase: true,
   // limitAttempts: true,
   // maxAttempts: 5
-  // }
-);
 const User = mongoose.model('User', userSchema);
 
 app.set('view engine', 'ejs');
@@ -93,8 +92,8 @@ app.post('/register', (req, res, next) => {
       req.flash('error', err.message);
       return res.redirect('/register');
     }
-    console.log('User registered:', newUser);
-    req.flash('success', 'Successfully registered!')
+    console.log('User registered:', user);
+    req.flash('success', 'Successfully registered!');
     res.redirect('/login');
   })
 });
@@ -103,11 +102,10 @@ app.get('/login', (req, res) => {
   res.render('login');
 })
 
-app.post('/login',
-  passport.authenticate('local', {
+app.post('/login', passport.authenticate('local', {
     failureRedirect: '/login',
     failureFlash: true,
-    successRedirect: '/maps',
+    successRedirect: '/maps'
 }));
 
 app.get('/logout', (req, res) => {
