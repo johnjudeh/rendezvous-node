@@ -159,6 +159,14 @@ div.ui.loginFormDiv {
   margin-top: 7%;
 }
 
+.ui.horizontal.divider.interests {
+  margin-bottom: 7%;
+}
+
+.ui.grid.interestsForm {
+  margin-left: 10px;
+}
+
 .ui.formButtonDiv {
   margin-top: 7%;
   width: 320px;
@@ -167,4 +175,17 @@ div.ui.loginFormDiv {
 .ui.button.formButton {
   width: 150px;
   margin: 0px 4px;
+}
+
+.colourCube {
+  height: 60px;
+  background-color: #4FB2AC;
+  margin: 2.5% 2.5%;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.colourCube p {
+  vertical-align: middle;
+  margin: 11.3px auto;
 }

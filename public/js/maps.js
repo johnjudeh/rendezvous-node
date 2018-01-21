@@ -18,7 +18,7 @@ let funPlaceTypes = [
   'bakery',
   'bar',
   'beauty_salon',
-  'bicycle_store',
+  // 'bicycle_store',
   'book_store',
   'bowling_alley',
   'cafe',
@@ -26,7 +26,7 @@ let funPlaceTypes = [
   'car_rental',
   'casino',
   'gym',
-  'hair_care',
+  // 'hair_care',
   'library',
   // 'lodging',
   'movie_theater',
@@ -38,7 +38,7 @@ let funPlaceTypes = [
   'shopping_mall',
   'spa',
   'stadium',
-  'travel_agency',
+  // 'travel_agency',
   'zoo'
 ];
 let spySrc = '/avatars/ninja.png'

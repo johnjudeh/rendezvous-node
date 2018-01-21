@@ -27,8 +27,8 @@ const userSchema = new mongoose.Schema({
     city: String,
     postCode: String,
     country: String
-  }
-  // interests: Array,
+  },
+  interests: Object
   // lastKnownLocation: Object
 });
 // Adds the needed passport methods to Schema
@@ -70,6 +70,37 @@ app.use((req, res, next) => {
   next();
 })
 
+const funPlaceTypes = [
+  'amusement_park',
+  'aquarium',
+  'art_gallery',
+  'bakery',
+  'bar',
+  'beauty_salon',
+  // 'bicycle_store',
+  'book_store',
+  'bowling_alley',
+  'cafe',
+  'campground',
+  'car_rental',
+  'casino',
+  'gym',
+  // 'hair_care',
+  'library',
+  // 'lodging',
+  'movie_theater',
+  'museum',
+  'night_club',
+  'park',
+  'restaurant',
+  'rv_park',
+  'shopping_mall',
+  'spa',
+  'stadium',
+  // 'travel_agency',
+  'zoo'
+];
+
 app.get('/', (req, res) => {
   res.render('landing');
 });
@@ -79,7 +110,7 @@ app.get('/maps', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-  res.render('register');
+  res.render('register', { funPlaceTypes: funPlaceTypes });
 })
 
 app.post('/register', (req, res, next) => {
