@@ -25,6 +25,11 @@ i.icon.logo {
   font-weight: 400;
 }
 
+.highlight {
+  color: #4FB2AC;
+  margin-left: 5px;
+}
+
 .grid {
   height: 83.5%;
 }
@@ -140,6 +145,14 @@ button.search {
 
 div.ui.formDiv {
   width: 47%;
+}
+
+div.ui.loginFormDiv {
+  width: 30%;
+}
+
+.ui.form .ui.error.message {
+  margin: -4% auto 2.5% auto;
 }
 
 .ui.horizontal.divider {

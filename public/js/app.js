@@ -5,16 +5,15 @@ const passportLocalMongoose = require('passport-local-mongoose');
       passport              = require('passport'),
       mongoose              = require('mongoose'),
       express               = require('express'),
+      flash                 = require('connect-flash'),
       app                   = express();
 
-// mongoose.connect('mongodb://localhost/rendez_vous');
-mongoose.connect('mongodb://localhost/demo');
-const db = mongoose.connection;
-
-db.on('error', console.error.bind(console));
-db.once('open', () => {
+// mongoose.connect('mongodb://localhost/rendez_vous').then(() => {
+mongoose.connect('mongodb://localhost/demo').then(() => {
   // console.log('rendez_vous db connected!');
   console.log('demo db connected!');
+}).catch((err) => {
+  console.error(err);
 });
 
 const userSchema = new mongoose.Schema({
@@ -43,25 +42,34 @@ userSchema.plugin(passportLocalMongoose
 );
 const User = mongoose.model('User', userSchema);
 
-
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 // Sets directory to serve static files
 // can be accessed from root route eg. /stylesheets/app.css
 app.use(express.static('public'));
+app.use(flash());
 
 // Passport middleware added
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(expressSession({
    secret: 'emelda is a babe',
    resave: false,
    saveUninitialized: false
 }));
-// passport.use(new LocalStrategy(User.authenticate()));
-passport.use(User.createStrategy());
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(User.authenticate()));
+  // {usernameField: 'email'},
+// passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  res.locals.success     = req.flash('success');
+  res.locals.error       = req.flash('error');
+  next();
+})
 
 app.get('/', (req, res) => {
   res.render('landing');
@@ -75,32 +83,37 @@ app.get('/register', (req, res) => {
   res.render('register');
 })
 
-app.post('/register', (req, res) => {
-  // Retrieve data from form
-  const newUser = new User({username: req.body.user.email});
-  console.log(newUser);
+app.post('/register', (req, res, next) => {
+  // const newUser = new User({username: req.body.user.email});
+  const newUser = new User(req.body.user);
+  // console.log(newUser);
   User.register(newUser, req.body.password, (err, user) => {
     if (err) {
-      console.log(err);
+      console.log('Error registering user:', err);
+      req.flash('error', err.message);
       return res.redirect('/register');
     }
-    passport.authenticate('local')(req, res, () => {
-      console.log('Welcome to Rendez Vous');
-      console.log(user);
-      req.redirect('/maps');
-    })
-
+    console.log('User registered:', newUser);
+    req.flash('success', 'Successfully registered!')
+    res.redirect('/login');
   })
-  // Save data to database
-
-  // Sign in user
-
-  // Redirect to /maps
-  res.redirect('/maps')
-})
+});
 
 app.get('/login', (req, res) => {
   res.render('login');
+})
+
+app.post('/login',
+  passport.authenticate('local', {
+    failureRedirect: '/login',
+    failureFlash: true,
+    successRedirect: '/maps',
+}));
+
+app.get('/logout', (req, res) => {
+  req.logout();
+  req.flash('success', 'Successfully logged out!');
+  res.redirect('/maps');
 })
 
 app.listen(8080, () => {

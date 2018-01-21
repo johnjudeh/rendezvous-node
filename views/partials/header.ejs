@@ -22,9 +22,16 @@
         </div>
         <!-- <a class='item'>Entertainment</a>
         <a class='item'>Get the Gang</a> -->
+        <% if (!currentUser) { %>
         <div class='right menu'>
           <a class='item' href='/register'>Sign Up</a>
           <a class='item' href='/login'>Login</a>
         </div>
+        <% } else { %>
+        <div class='right menu'>
+          <a class='item' href='#'>Signed in as: <span class='highlight'><%= currentUser.firstName %> <%= currentUser.lastName %></span></a>
+          <a class='item' href='/logout'>Logout</a>
+        </div>
+        <% } %>
       </div>
     </div>
