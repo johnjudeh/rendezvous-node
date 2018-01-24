@@ -1,8 +1,22 @@
-<% include ./partials/header %>
-
-    <div class='ui container main'>
-      <h1>This is the landing page</h1>
-      <a href='/maps' class="ui blue basic button">Maps</a>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Rendez Vous</title>
+    <link rel='stylesheet' href='/css/landing.css'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css'>
+    <link href='https://fonts.googleapis.com/css?family=Oleo+Script+Swash+Caps|Roboto:400,400i,500,700,700i' rel='stylesheet'>
+  </head>
+  <body>
+    <%# <div class='ui container main imageHolder'> %>
+    <div id='landing-header'>
+      <h1>Rendez Vous</h1>
+      <a href='/maps' class='ui teal button landingButton'>Begin >></a>
     </div>
+
+    <img class='landing image' src='/imgs/landing.jpg'>
+
+
+    <%# </div> %>
 
 <% include ./partials/footer %>

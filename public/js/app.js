@@ -32,7 +32,6 @@ const userSchema = new mongoose.Schema({
   // lastKnownLocation: Object
 });
 // Adds the needed passport methods to Schema
-// userSchema.plugin(passportLocalMongoose
 userSchema.plugin(passportLocalMongoose);
   // , {
   // usernameField: 'email'

@@ -13,7 +13,34 @@
       <p> <%= error %> </p>
     </div>
 
-    <div class='ui' id='personalForm'>
+    <div class='ui' id='interestsForm'>
+
+      <h4 class='ui horizontal divider interests'>Choose Your Interests</h4>
+      <div class='ui grid interestsForm'>
+        <% for (funPlace of funPlaceTypes) { %>
+          <div class='five wide column interests'>
+            <div class="inline field">
+              <div class="ui toggle checkbox">
+                <input type="checkbox" tabindex="0" class="hidden" name='user[interests][<%= funPlace %>]'>
+                <label>
+                  <%= funPlace.replace(/_/g, ' ').split(' ').map((word) => {
+                    return word.replace(word[0], word[0].toUpperCase());
+                  }).join(' '); %>
+                </label>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+
+      <div class='ui container formButtonDiv'>
+        <a class='ui grey button formButton' href='/'>Back</a>
+        <a class='ui teal button next formButton' tabindex='0'>Next</a>
+      </div>
+
+    </div>
+
+    <div class='ui hidden' id='personalForm'>
 
       <h4 class='ui horizontal divider'>Personal Details</h4>
       <div class='fields'>
@@ -306,29 +333,6 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <div class='ui container formButtonDiv'>
-        <a class='ui grey button formButton' href='/'>Back</a>
-        <a class='ui teal button next formButton' tabindex='0'>Next</a>
-      </div>
-
-    </div>
-
-    <div class='ui hidden' id='interestsForm'>
-
-      <h4 class='ui horizontal divider interests'>Choose Your Interests</h4>
-      <div class='ui grid interestsForm'>
-        <% for (funPlace of funPlaceTypes) { %>
-          <div class='five wide column'>
-            <div class="inline field">
-              <div class="ui toggle checkbox">
-                <input type="checkbox" tabindex="0" class="hidden" name='user[interests][<%= funPlace %>]'>
-                <label><%= funPlace %></label>
-              </div>
-            </div>
-          </div>
-        <% } %>
       </div>
 
       <div class='ui container formButtonDiv'>
