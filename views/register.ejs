@@ -34,7 +34,7 @@
       </div>
 
       <div class='ui container formButtonDiv'>
-        <a class='ui grey button formButton' href='/'>Back</a>
+        <a class='ui grey button formButton' href='/maps'>Back</a>
         <a class='ui teal button next formButton' tabindex='0'>Next</a>
       </div>
 
@@ -345,22 +345,6 @@
   </form>
 </div>
 
-<script>
-  $('.ui.dropdown').dropdown();
-  $('.ui.checkbox').checkbox();
-
-  $('a.next.formButton').click(() => {
-    toggleForms();
-  });
-
-  $('a.back.formButton').click(() => {
-    toggleForms();
-  });
-
-  function toggleForms() {
-    $('#personalForm').toggleClass('hidden');
-    $('#interestsForm').toggleClass('hidden');
-  }
-</script>
+<script src='/js/register.js'></script>
 
 <% include partials/footer %>
