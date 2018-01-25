@@ -1,6 +1,5 @@
-let map, infoWindow, pos, autocomplete, places, geocoder;
+let map, infoWindow, pos, autocomplete, places, geocoder, funTypes_UserOverride;
 let markers = [];
-let countryRestrict = {'country': 'uk'};
 let londonCenter = {lat: 51.509, lng: -0.116};
 let londonZoom = 12;
 let locations = [
@@ -11,17 +10,17 @@ let locations = [
   // {lat: 51.4955329 - (0.00137 * Math.pow(2, 4)), lng: -0.0765513 - (0.0038 * Math.pow(2, 4))}
   // {lat: 51.4955329, lng: -0.0765513}
 ];
-let addresses = ['Flat 1, Amisha Court, SE1 3GH'];
+let addresses = [];
 let funLocations = [];
 let funMarkers = [];
-let funPlaceTypes = [
+let spySrc = '/avatars/ninja.png';
+const FUN_PLACE_TYPES = [
   'amusement_park',
   'aquarium',
   'art_gallery',
   'bakery',
   'bar',
   'beauty_salon',
-  // 'bicycle_store',
   'book_store',
   'bowling_alley',
   'cafe',
@@ -29,7 +28,6 @@ let funPlaceTypes = [
   'car_rental',
   'casino',
   'gym',
-  // 'hair_care',
   'library',
   // 'lodging',
   'movie_theater',
@@ -44,12 +42,19 @@ let funPlaceTypes = [
   // 'travel_agency',
   'zoo'
 ];
-let spySrc = '/avatars/ninja.png'
+const DEFAULT_RADIUS = 1000;
 const MARKER_PATH = 'https://developers.google.com/maps/documentation/javascript/images/marker_green';
 const hostnameRegexp = new RegExp('^https?://.+?/');
 const locateButton = document.querySelector('button.locateButton');
 const searchButton = document.querySelector('button.search');
 const funButton = document.querySelector('.funFinder');
+
+let currentScript = document.getElementById('mapScript');
+let currentUserInterests = currentScript.getAttribute('data-user-interests');
+
+if (currentUserInterests) {
+  funTypes_UserOverride = JSON.parse(currentUserInterests);
+}
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -88,12 +93,14 @@ function geolocateUser() {
       };
 
       locations.push(pos);
-
       hideLocatorButtons();
-      addFriendHolder(pos, spySrc);
 
       // Waits till the locator button animation ends
-      setTimeout(() => createAutocomplete(), 1000);
+      setTimeout(() => {
+        createAutocomplete();
+        addFriendHolder(pos, spySrc);
+      }, 1000);
+
       createMarkerClusterer();
 
     }, () => {
@@ -112,12 +119,7 @@ function createAutocomplete() {
   const autocompleteInput = document.getElementById('autocomplete');
   autocompleteInput.focus();
 
-  autocomplete = new google.maps.places.Autocomplete(
-    autocompleteInput, {
-    types: [],
-    // types: ['address'],
-    componentRestrictions: countryRestrict
-  });
+  autocomplete = new google.maps.places.Autocomplete(autocompleteInput);
   places = new google.maps.places.PlacesService(map);
 
   autocomplete.addListener('place_changed', () => onPlaceChanged(autocompleteInput));
@@ -133,8 +135,6 @@ function loadingGeolocation () {
   locateButton.classList.add('loading');
 }
 
-// Add transition animations!
-
 function hideLocatorButtons() {
   const locatorDiv = document.querySelector('#locator');
   const locateButton = document.querySelector('.locateButton');
@@ -149,26 +149,34 @@ function addFriendHolder(location, imgSrc) {
   const locatorParent = document.querySelector('.locatorParent');
   const friendHolder = document.querySelector('#clone');
   const fhCloned = friendHolder.cloneNode(true);
+  let resultCountry;
 
   fhCloned.classList.remove('hidden');
   fhCloned.id = '';
 
-  geocoder.geocode({
-    location: location
-    // fill more into me
-  }, (results, status) => {
+  geocoder.geocode({ location: location }, (results, status) => {
     if (status === google.maps.GeocoderStatus.OK) {
-      let address;
 
       if (results[0].formatted_address) {
-        address = results[0].formatted_address;
+        addresses.push(results[0].formatted_address);
+
+        const addressComponents_obj = results[0].address_components;
+
+        for (addressCompenent of addressComponents_obj) {
+          if (addressCompenent.types.includes('country')) {
+            resultCountry = addressCompenent.short_name;
+            unhideButtonsAndSetCountry(resultCountry);
+            break;
+          }
+        }
+
       } else {
         // If first result has no formatted address
-        address = 'Not available...';
+        addresses.push('Not available...');
       }
 
       const addressParagraph = fhCloned.childNodes[1].childNodes[3].childNodes[1];
-      addressParagraph.textContent = address;
+      addressParagraph.textContent = addresses[addresses.length - 1];
     }
   })
 
@@ -177,89 +185,99 @@ function addFriendHolder(location, imgSrc) {
     img.src = imgSrc;
   }
 
+  locatorParent.insertBefore(fhCloned, friendHolder);
+}
+
+function unhideButtonsAndSetCountry(country) {
   if (locations.length === 1) {
+    setCountryRestriction(country);
     const reloadIcon = document.getElementById('reloadMap');
 
     reloadIcon.classList.remove('disabled');
     reloadIcon.classList.add('pointer');
 
     reloadIcon.addEventListener('click', () => {
-      // resetPage();
       window.location.reload();
     });
   } else if (locations.length === 2) {
     const funFinderDiv = document.getElementById('funFinderDiv');
     funFinderDiv.classList.remove('hidden');
   }
-
-  locatorParent.insertBefore(fhCloned, friendHolder);
 }
 
 function onPlaceChanged(inputElement) {
   let place = autocomplete.getPlace();
-  console.log(place);
 
   inputElement.value = '';
   inputElement.focus();
 
   if (place && place.geometry && place.geometry.location) {
     let location = place.geometry.location.toJSON();
-    console.log(location);
     locations.push(location);
     createMarkerClusterer();
     addFriendHolder(location);
   }
 }
 
-// Add a bouncing marker for the chosen area can first implement
-// randomly before figuring out how to really do it
-
-function search() {
+function search(radius) {
 
   const search = {
     location: map.getCenter(),
-    radius: 900,                // Upto 50 000
-    types: funPlaceTypes,
+    radius: radius || DEFAULT_RADIUS,                // Upto 50 000
+    types: funTypes_UserOverride || FUN_PLACE_TYPES,
     openNow: true,
     rankBy: google.maps.places.RankBy.PROMINENCE
   }
 
   places.nearbySearch(search, (results, status) => {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
-      // clearResults();
-      // clearMarkers();
 
-      // Create a marker for each hotel found, and
-      // assign a letter of the alphabetic to each marker icon.
-      // for (var i = 0; i < results.length; i++) {
-      for (let i = 0; i < 5; i++) {
+      // Checks if number of results is less than max results shown
+      let maxResults = 5;
+      if (results.length < 5) {
+        maxResults = results.length;
+      }
+
+      // Create a marker for each fun place found, and assign letter
+      for (let i = 0; i < maxResults; i++) {
         let markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
         let markerIcon = MARKER_PATH + markerLetter + '.png';
-        // Use marker animation to drop the icons incrementally on the map.
+
+        // Use marker animation to drop the icons incrementally on the map
         funMarkers[i] = new google.maps.Marker({
           position: results[i].geometry.location,
           animation: google.maps.Animation.DROP,
           icon: markerIcon
         });
-
         funLocations.push(results[i].geometry.location.toJSON());
-        // If the user clicks a hotel marker, show the details of that hotel
-        // in an info window.
+
+        // If the user clicks a marker, show the details in the info window
         funMarkers[i].placeResult = results[i];
         google.maps.event.addListener(funMarkers[i], 'click', showInfoWindow);
         setTimeout(dropMarker(i), i * 100);
-        // addResult(results[i], i);
+
+        // Zooms into locations once they have been decided
+        setTimeout(() => {
+          map.setZoom(getZoomLevel(funLocations));
+          map.panTo(getMidPoint(funLocations));
+        }, 2300);
       }
     } else {
-      console.log('Oh no!', status);
+      reSearch(radius);
     }
   });
+}
 
-  // Zooms into locations
-  setTimeout(() => {
-    map.setZoom(getZoomLevel(funLocations));
-    map.panTo(getMidPoint(funLocations));
-  }, 2300)
+function reSearch(oldRadius) {
+  let newRadius;
+
+  if (oldRadius) {
+    newRadius = oldRadius * 1.5;
+  } else {
+    newRadius = DEFAULT_RADIUS * 1.5;
+  }
+
+  search(newRadius);
 }
 
 function dropMarker(i) {
@@ -445,6 +463,11 @@ function getZoomLevel(locations) {
   zoomLevel = Math.min(latZoomLevel, lngZoomLevel);
 
   return zoomLevel;
+}
+
+function setCountryRestriction(country) {
+  const countryRestrict = {'country': country};
+  autocomplete.setOptions({ componentRestrictions: countryRestrict });
 }
 
 // Not being used at the moment as is very buggy
