@@ -1,5 +1,8 @@
 let map, infoWindow, pos, autocomplete, places, geocoder;
+let markers = [];
 let countryRestrict = {'country': 'uk'};
+let londonCenter = {lat: 51.509, lng: -0.116};
+let londonZoom = 12;
 let locations = [
   // {lat: 51.4954622, lng: -0.07652579999999999},
   // {lat: 51.5051007, lng: -0.01562920000003487},
@@ -51,8 +54,8 @@ const funButton = document.querySelector('.funFinder');
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     // center: {lat: 51.5007, lng: -0.12406},
-    center: {lat: 51.509, lng: -0.116},
-    zoom: 12,
+    center: londonCenter,
+    zoom: londonZoom,
     mapTypeControl: false,
     streetViewControl: false,
     backgroundColor: 'rgb(242, 255, 254)'
@@ -66,8 +69,11 @@ function initMap() {
 
   geocoder = new google.maps.Geocoder();
 
-  locateButton.addEventListener('click', geolocateUser, {once: true});
-  searchButton.addEventListener('click', createAutocomplete);
+  locateButton.addEventListener('click', geolocateUser);
+  searchButton.addEventListener('click', () => {
+    hideLocatorButtons();
+    setTimeout(() => createAutocomplete(), 1000);
+  });
   funButton.addEventListener('click', search);
 }
 
@@ -118,8 +124,6 @@ function createAutocomplete() {
 }
 
 function createSearchInput () {
-  hideLocatorButtons();
-
   const searchDiv = document.querySelector('#search');
   searchDiv.classList.remove('hidden');
 }
@@ -134,7 +138,6 @@ function loadingGeolocation () {
 function hideLocatorButtons() {
   const locatorDiv = document.querySelector('#locator');
   const locateButton = document.querySelector('.locateButton');
-  const orDiv = document.querySelector('.or');
 
   locateButton.classList.remove('loading', 'geo');
   locateButton.textContent = '';
@@ -156,7 +159,6 @@ function addFriendHolder(location, imgSrc) {
   }, (results, status) => {
     if (status === google.maps.GeocoderStatus.OK) {
       let address;
-      console.log(results);
 
       if (results[0].formatted_address) {
         address = results[0].formatted_address;
@@ -175,7 +177,17 @@ function addFriendHolder(location, imgSrc) {
     img.src = imgSrc;
   }
 
-  if (locations.length === 2) {
+  if (locations.length === 1) {
+    const reloadIcon = document.getElementById('reloadMap');
+
+    reloadIcon.classList.remove('disabled');
+    reloadIcon.classList.add('pointer');
+
+    reloadIcon.addEventListener('click', () => {
+      // resetPage();
+      window.location.reload();
+    });
+  } else if (locations.length === 2) {
     const funFinderDiv = document.getElementById('funFinderDiv');
     funFinderDiv.classList.remove('hidden');
   }
@@ -185,17 +197,17 @@ function addFriendHolder(location, imgSrc) {
 
 function onPlaceChanged(inputElement) {
   let place = autocomplete.getPlace();
+  console.log(place);
 
   inputElement.value = '';
   inputElement.focus();
 
-  if (place.geometry.location) {
+  if (place && place.geometry && place.geometry.location) {
     let location = place.geometry.location.toJSON();
+    console.log(location);
     locations.push(location);
     createMarkerClusterer();
     addFriendHolder(location);
-  } else {
-    document.getElementById('autocomplete').placeholder = 'Enter a city';
   }
 }
 
@@ -328,14 +340,20 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 function createMarkerClusterer(){
   // Marker clusters
   let labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let lastLocationIndex = locations.length - 1;
+  markers.push(new google.maps.Marker({
+    position: locations[lastLocationIndex],
+    label: labels[lastLocationIndex % labels.length],
+    animation: google.maps.Animation.DROP
+  }));
 
-  let markers = locations.map((location, i) => {
-    return new google.maps.Marker({
-      position: location,
-      label: labels[i % labels.length],
-      animation: google.maps.Animation.DROP
-    });
-  })
+  //   .map((location, i) => {
+  //   return new google.maps.Marker({
+  //     position: location,
+  //     label: labels[i % labels.length],
+  //     animation: google.maps.Animation.DROP
+  //   });
+  // })
 
   let markerCluster = new MarkerClusterer(map, markers,
         {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
@@ -427,4 +445,42 @@ function getZoomLevel(locations) {
   zoomLevel = Math.min(latZoomLevel, lngZoomLevel);
 
   return zoomLevel;
+}
+
+// Not being used at the moment as is very buggy
+function resetPage() {
+  locations = [];
+  const locateButton = document.querySelector('.locateButton');
+  const fHolders = document.querySelectorAll('.friendHolder');
+  const searchDiv = document.getElementById('search');
+  const locatorDiv = document.getElementById('locator');
+  const funFinderDiv = document.getElementById('funFinderDiv');
+
+  locateButton.classList.add('geo');
+  locateButton.innerHTML = '<i class="marker icon"></i>Locate Me';
+  locateButton.classList.remove('shrink');
+
+  for (fHolder of fHolders) {
+    fHolder.classList.add('hidden');
+  }
+  searchDiv.classList.add('hidden');
+  funFinderDiv.classList.add('hidden');
+  locatorDiv.classList.remove('hidden');
+
+
+  for (marker of markers) {
+    marker.setVisible(false);
+    marker.setMap(null);
+  }
+  markers = [];
+
+  for (funMarker of funMarkers) {
+    funMarker.setVisible(false);
+    funMarker.setMap(null);
+  }
+  funMarkers = [];
+
+  map.panTo(londonCenter);
+  map.setZoom(londonZoom);
+
 }

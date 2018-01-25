@@ -1,7 +1,7 @@
 <% include ./partials/header %>
 
 <div class='ui container main'>
-  <%# <h1>Maps Page</h1> %>
+
   <div class='ui grid contianer'>
 
     <div class='eleven wide column map'>
@@ -12,17 +12,18 @@
 
       <div class='row locatorParent'>
         <div class='ui horizontal divider'>
-          Add Friends
+          Friend Finder
         </div>
         <div class="ui buttons locator" id='locator'>
           <button class="ui teal button geo locateButton">
-            <i class="marker icon"></i>Locate
+            <i class="marker icon"></i>Locate Me
           </button>
           <div class="ui or"></div>
           <button class="ui grey button search">Search</button>
         </div>
-        <div class='ui input focus locator hidden' id='search'>
+        <div class='ui input icon focus locator hidden' id='search'>
           <input id='autocomplete' type='text' placeholder='Search for Address'>
+          <i class='repeat disabled icon' id='reloadMap'></i>
         </div>
         <div class='ui card locator friendHolder hidden' id='clone'>
           <div class='content'>
