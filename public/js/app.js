@@ -44,16 +44,17 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 // Sets directory to serve static files
 // can be accessed from root route eg. /stylesheets/app.css
-// default settings: etag gen -> on; last-modified on os -> on; max-age: 0
+// default settings: etag gen -> on; last-modified on os -> on
 app.use(express.static('public', {
-  etag: true
-  // immutable: true,
-  // maxAge: 31536000,
-  // setHeaders: (res, path, stat) => {
-  //   res.set({
-  //     'Cache-control': 'no-cache'
-  //   })
-  // }
+  lastModified: true,
+  maxAge: 31536000000,    // time in ms (not s)
+  immutable: true,
+  setHeaders: (res, path, stat) => {
+    // Ensures service worker always validated with server
+    if (path.indexOf('sw') >= 0) {
+      res.set('Cache-control', 'no-cache');
+    }
+  }
 }));
 app.use(flash());
 
@@ -111,17 +112,17 @@ const funPlaceTypes = [
 ];
 
 app.get('/', (req, res) => {
-  // res.set('Cache-control', 'no-cache');
+  res.set('Cache-control', 'no-cache');
   res.render('landing');
 });
 
 app.get('/maps', (req, res) => {
-  // res.set('Cache-control', 'no-cache');
+  res.set('Cache-control', 'no-cache');
   res.render('index');
 });
 
 app.get('/register', (req, res) => {
-  // res.set('Cache-control', 'no-cache');
+  res.set('Cache-control', 'no-cache');
   res.render('register', { funPlaceTypes: funPlaceTypes });
 })
 
@@ -142,7 +143,7 @@ app.post('/register', (req, res, next) => {
 });
 
 app.get('/login', (req, res) => {
-  // res.set('Cache-control', 'no-cache');
+  res.set('Cache-control', 'no-cache');
   res.render('login');
 })
 
