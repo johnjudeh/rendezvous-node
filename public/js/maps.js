@@ -192,6 +192,7 @@ function unhideButtonsAndSetCountry(country) {
   if (locations.length === 1) {
     setCountryRestriction(country);
     const reloadIcon = document.getElementById('reloadMap');
+    const autocompleteInput = document.getElementById('autocomplete');
 
     reloadIcon.classList.remove('disabled');
     reloadIcon.classList.add('pointer');
@@ -199,6 +200,9 @@ function unhideButtonsAndSetCountry(country) {
     reloadIcon.addEventListener('click', () => {
       window.location.reload();
     });
+
+    autocompleteInput.placeholder = 'Where are your friends?';
+    
   } else if (locations.length === 2) {
     const funFinderDiv = document.getElementById('funFinderDiv');
     funFinderDiv.classList.remove('hidden');

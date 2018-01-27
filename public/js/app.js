@@ -44,7 +44,17 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 // Sets directory to serve static files
 // can be accessed from root route eg. /stylesheets/app.css
-app.use(express.static('public'));
+// default settings: etag gen -> on; last-modified on os -> on; max-age: 0
+app.use(express.static('public', {
+  etag: true
+  // immutable: true,
+  // maxAge: 31536000,
+  // setHeaders: (res, path, stat) => {
+  //   res.set({
+  //     'Cache-control': 'no-cache'
+  //   })
+  // }
+}));
 app.use(flash());
 
 // Passport middleware added
@@ -101,14 +111,17 @@ const funPlaceTypes = [
 ];
 
 app.get('/', (req, res) => {
+  // res.set('Cache-control', 'no-cache');
   res.render('landing');
 });
 
 app.get('/maps', (req, res) => {
+  // res.set('Cache-control', 'no-cache');
   res.render('index');
 });
 
 app.get('/register', (req, res) => {
+  // res.set('Cache-control', 'no-cache');
   res.render('register', { funPlaceTypes: funPlaceTypes });
 })
 
@@ -129,6 +142,7 @@ app.post('/register', (req, res, next) => {
 });
 
 app.get('/login', (req, res) => {
+  // res.set('Cache-control', 'no-cache');
   res.render('login');
 })
 
@@ -151,15 +165,3 @@ app.listen(8080, () => {
 
 
 // ARCHIVES - USE ME LATER
-
-// To be used in .static when you version filenames based on content
-// options = {
-//   etag: true,
-//   // immutable: true,
-//   // maxAge: 31536000,
-//   setHeaders: (res, path, stat) => {
-//     res.set({
-//       'Cache-Control': 'no-cache'
-//     })
-//   }
-// };
