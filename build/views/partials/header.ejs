@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rendez Vous</title>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="initial-scale=1.0">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css'>
+    <link rel='stylesheet' href='/css/app-53784cb522.css'>
+    <link href='https://fonts.googleapis.com/css?family=Oleo+Script+Swash+Caps|Roboto:400,400i,500,700,700i' rel='stylesheet'>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.js'></script>
+  </head>
+  <body>
+    <div class='ui fixed inverted menu'>
+      <div class='ui container'>
+        <div class='header item'>
+            <a href='/'><i class='cube icon logo'></i></a>
+            <p class='logo__text'>Rendez Vous</p>
+        </div>
+        <% if (!currentUser) { %>
+          <div class='right menu'>
+            <a class='item' href='/register'>Sign Up</a>
+            <a class='item' href='/login'>Login</a>
+          </div>
+        <% } else { %>
+          <div class='right menu'>
+            <a class='item' href='#'>Signed in as: <span class='highlight'><%= currentUser.firstName %> <%= currentUser.lastName %></span></a>
+            <a class='item' href='/logout'>Logout</a>
+          </div>
+        <% } %>
+      </div>
+    </div>

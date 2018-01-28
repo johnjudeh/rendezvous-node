@@ -1,0 +1,89 @@
+<% include ./partials/header %>
+
+<div class='ui container main'>
+
+  <div class='ui grid contianer'>
+
+    <div class='eleven wide column map'>
+      <div id='map'></div>
+    </div>
+
+    <div class='five wide column'>
+
+      <div class='row locatorParent'>
+        <div class='ui horizontal divider'>
+          Friend Finder
+        </div>
+        <div class='ui buttons locator' id='locator'>
+          <button class='ui teal button geo locateButton'>
+            <i class='marker icon'></i>Locate Me
+          </button>
+          <div class='ui or'></div>
+          <button class='ui grey button search'>Search</button>
+        </div>
+        <div class='ui input icon focus locator hidden' id='search'>
+          <input id='autocomplete' type='text' placeholder='Where are you?'>
+          <i class='repeat disabled icon' id='reloadMap'></i>
+        </div>
+        <div class='ui card locator friendHolder hidden' id='clone'>
+          <div class='content'>
+            <img class='ui avatar image' src='/avatars/male-b0728b3f24.png'>
+            <div class='ui container addressDiv'>
+              <p class='address'></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class='row'>
+        <div class='ui locator hidden' id='funFinderDiv'>
+          <button class='ui yellow button funFinder'>Find me fun</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Used for infoWindow displaying  -->
+<div style='display: none'>
+  <div id='info-content'>
+    <table>
+      <tr id='iw-url-row' class='iw_table_row'>
+        <td id='iw-icon' class='iw_table_icon'></td>
+        <td id='iw-url'></td>
+      </tr>
+      <tr id='iw-address-row' class='iw_table_row'>
+        <td class='iw_attribute_name'>Address:</td>
+        <td id='iw-address'></td>
+      </tr>
+      <tr id='iw-phone-row' class='iw_table_row'>
+        <td class='iw_attribute_name'>Telephone:</td>
+        <td id='iw-phone'></td>
+      </tr>
+      <tr id='iw-rating-row' class='iw_table_row'>
+        <td class='iw_attribute_name'>Rating:</td>
+        <td id='iw-rating'></td>
+      </tr>
+      <tr id='iw-website-row' class='iw_table_row'>
+        <td class='iw_attribute_name'>Website:</td>
+        <td id='iw-website'></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<% include ./partials/toasts %>
+
+<% if(currentUser) { %>
+  <script type='text/javascript' src='/js/maps-43dcea500e.js' data-user-interests='<%= JSON.stringify(Object.keys(currentUser.interests)) %>' id='mapScript'></script>
+<% } else { %>
+  <script type='text/javascript' src='/js/maps-43dcea500e.js' data-user-interests='' id='mapScript'></script>
+<% } %>
+
+<script src='https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js'></script>
+<script async defer
+  src='https://maps.googleapis.com/maps/api/js?key=AIzaSyCSV5BXC93ll0igbOw23qAAzyEjN84KtPk&libraries=places&callback=initMap'>
+</script>
+
+<% include ./partials/footer %>

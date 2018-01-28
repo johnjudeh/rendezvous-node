@@ -1,0 +1,41 @@
+<% include partials/header %>
+
+<div class='ui container main loginFormDiv'>
+
+  <% if (error && error.length > 0) { %>
+    <form class='ui error form' action='/login' method='post'>
+  <% } else if (success && success.length > 0) { %>
+    <form class='ui success form' action='/login' method='post'>
+  <% } else { %>
+    <form class='ui form' action='/login' method='post'>
+  <% } %>
+
+    <div class='ui error message'>
+      <div class='header'>We had some issues</div>
+      <p> <%= error %> </p>
+    </div>
+    <div class='ui success message'>
+      <div class='header'>Hoorah!</div>
+      <p> <%= success %> Please sign in below. </p>
+    </div>
+
+    <div class='field'>
+      <label>Email</label>
+      <input type='text' name='username' placeholder='john.doe@lostmail.com' autocomplete='email'>
+    </div>
+    <div class='field'>
+      <label>Password</label>
+      <input type='password' name='password' placeholder='********' autocomplete='current-password'>
+    </div>
+
+    <div class='ui container formButtonDiv'>
+      <button class='ui teal button formButton' tabindex='0'>Submit</button>
+      <a class='ui grey button formButton' href='/maps'>Go Back</a>
+    </div>
+  </form>
+
+</div>
+
+<% include ./partials/toasts %>
+
+<% include partials/footer %>

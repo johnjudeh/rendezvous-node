@@ -1,0 +1,12 @@
+{
+  "avatars/female.png": "avatars/female-2a59da33c7.png",
+  "avatars/male.png": "avatars/male-b0728b3f24.png",
+  "avatars/ninja.png": "avatars/ninja-6879220b2d.png",
+  "css/app.css": "css/app-53784cb522.css",
+  "css/landing.css": "css/landing-6c9013db50.css",
+  "imgs/landing.jpg": "imgs/landing-c995ae9de9.jpg",
+  "js/maps.js": "js/maps-43dcea500e.js",
+  "js/register.js": "js/register-5e8eb77633.js",
+  "js/sw/index.js": "js/sw/index-07391ff740.js",
+  "sw.js": "sw-035024ebe3.js"
+}
