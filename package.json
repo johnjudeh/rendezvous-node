@@ -1,7 +1,13 @@
 {
-  "name": "mapper",
+  "name": "rendez-vous",
   "version": "1.0.0",
-  "description": "An app that helps people in big cities connect",
+  "description": "An app that helps people in big cities connect.",
+  "keywords": [
+    "maps",
+    "friends",
+    "location",
+    "activities"
+  ],
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -22,6 +28,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1"
+    "babel-preset-es2015": "^6.24.1",
+    "gulp-rev": "^8.1.1"
   }
 }
