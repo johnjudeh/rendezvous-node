@@ -162,7 +162,7 @@ function addFriendHolder(location, imgSrc) {
 
         const addressComponents_obj = results[0].address_components;
 
-        for (addressCompenent of addressComponents_obj) {
+        for (let addressCompenent of addressComponents_obj) {
           if (addressCompenent.types.includes('country')) {
             resultCountry = addressCompenent.short_name;
             unhideButtonsAndSetCountry(resultCountry);
@@ -202,7 +202,7 @@ function unhideButtonsAndSetCountry(country) {
     });
 
     autocompleteInput.placeholder = 'Where are your friends?';
-    
+
   } else if (locations.length === 2) {
     const funFinderDiv = document.getElementById('funFinderDiv');
     funFinderDiv.classList.remove('hidden');
@@ -391,6 +391,7 @@ function getMidPoint(locations) {
   let lats = []
   let lngs = [];
   let avgCoords = {};
+  let maxLat, minLat, maxLng, minLng;
 
   locations.forEach((location) => {
     lats.push(location.lat);
@@ -410,7 +411,7 @@ function getMidPoint(locations) {
 
 function average(arr) {
   let sum = 0;
-  for (index of arr) {
+  for (let index of arr) {
     sum += index;
   }
   return sum / arr.length;
@@ -487,7 +488,7 @@ function resetPage() {
   locateButton.innerHTML = '<i class="marker icon"></i>Locate Me';
   locateButton.classList.remove('shrink');
 
-  for (fHolder of fHolders) {
+  for (let fHolder of fHolders) {
     fHolder.classList.add('hidden');
   }
   searchDiv.classList.add('hidden');
@@ -495,13 +496,13 @@ function resetPage() {
   locatorDiv.classList.remove('hidden');
 
 
-  for (marker of markers) {
+  for (let marker of markers) {
     marker.setVisible(false);
     marker.setMap(null);
   }
   markers = [];
 
-  for (funMarker of funMarkers) {
+  for (let funMarker of funMarkers) {
     funMarker.setVisible(false);
     funMarker.setMap(null);
   }

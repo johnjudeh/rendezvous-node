@@ -1,29 +1,28 @@
-let staticCacheName = 'rendezvous-static-v9';
-let cacheWhiteList = [
-  staticCacheName
-]
+const staticCacheName = 'rendezvous-static-v3';
+const cacheWhiteList = [ staticCacheName ];
 
+// Event fires when service worker is first discovered
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(staticCacheName).then(cache => {
       return cache.addAll([
         '/',
         '/maps',
+        '/register',
+        '/login',
         '/js/maps.js',
+        '/js/register.js',
+        '/js/sw/index.js',
         '/css/app.css',
+        '/css/landing.css',
         '/avatars/male.png',
         '/avatars/female.png',
         '/avatars/ninja.png',
+        '/imgs/landing.jpg',
         'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css',
-        'https://fonts.googleapis.com/css?family=Oleo+Script+Swash+Caps|Roboto:400,400i,500,700,700i'
-
-        // Google API fetches return no 'Access-Control-Allow-Origin' errors - should check whether Google allows caching
-
-        // 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCSV5BXC93ll0igbOw23qAAzyEjN84KtPk&libraries=places&callback=initMap'
-        // 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js'
-        // 'https://developers.google.com/maps/documentation/javascript/images/marker_green',
-        // 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
-
+        'https://fonts.googleapis.com/css?family=Oleo+Script+Swash+Caps|Roboto:400,400i,500,700,700i',
+        'https://code.jquery.com/jquery-3.2.1.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.js'
       ]);
     })
   );
@@ -43,41 +42,17 @@ self.addEventListener('activate', event => {
   );
 })
 
-//
-// self.addEventListener('fetch', event => {
-//   event.respondWith(
-//     caches.open(staticCacheName).then(cache => {
-//       return cache.match(event.request).then(response => {
-//         // Do not need updating as they are static - except during development
-//         // In development, the sw cache name should be changed for any updates
-//
-//         return response || fetch(event.request).then((networkResponse) => {
-//           // then statement can be deleted after development
-//           // console.log(networkResponse);
-//           return networkResponse;
-//         });
-//       })
-//     })
-//   );
-//
-//   // The below is for if I want different origins to respond in different ways
-//
-//   // let requestURL = new URL(event.request.url);
-//   //
-//   // if (requestURL.origin === location.origin) {
-//   //   event.respondWith(
-//   //     caches.open(staticCacheName).then((cache) => {
-//   //       return cache.match(event.request).then(response => {
-//   //         // Do not need updating as they are static - except during development
-//   //         // In development, the cache name should be changed
-//   //         return response || fetch(event.request);
-//   //       })
-//   //     })
-//   //   );
-//   //   return;
-//   // }
-// })
-//
+// Handles how a page makes fetch requests
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.open(staticCacheName).then(cache => {
+      return cache.match(event.request).then(response => {
+        // Do not need updating as they are static
+        return response || fetch(event.request);
+      })
+    })
+  );
+})
 
 // Awaits message to update service worker
 self.addEventListener('message', (event) => {
