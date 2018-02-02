@@ -1,514 +1,570 @@
-let map, infoWindow, pos, autocomplete, places, geocoder, funTypes_UserOverride;
-let markers = [];
-let londonCenter = {lat: 51.509, lng: -0.116};
-let londonZoom = 12;
-let locations = [
-  // {lat: 51.4954622, lng: -0.07652579999999999},
-  // {lat: 51.5051007, lng: -0.01562920000003487},
-  // {lat: 51.5501741, lng: -0.003371000000015556}
-  // {lat: 51.4955329 + (0.00137 * Math.pow(2, 5.4)), lng: -0.0765513 + (0.0038 * Math.pow(2, 4))},
-  // {lat: 51.4955329 - (0.00137 * Math.pow(2, 4)), lng: -0.0765513 - (0.0038 * Math.pow(2, 4))}
-  // {lat: 51.4955329, lng: -0.0765513}
-];
-let addresses = [];
-let funLocations = [];
-let funMarkers = [];
-let spySrc = '/avatars/ninja.png';
-const FUN_PLACE_TYPES = [
-  'amusement_park',
-  'aquarium',
-  'art_gallery',
-  'bakery',
-  'bar',
-  'beauty_salon',
-  'book_store',
-  'bowling_alley',
-  'cafe',
-  'campground',
-  'car_rental',
-  'casino',
-  'gym',
-  'library',
-  // 'lodging',
-  'movie_theater',
-  'museum',
-  'night_club',
-  'park',
-  'restaurant',
-  'rv_park',
-  'shopping_mall',
-  'spa',
-  'stadium',
-  // 'travel_agency',
-  'zoo'
-];
-const DEFAULT_RADIUS = 1000;
-const MARKER_PATH = 'https://developers.google.com/maps/documentation/javascript/images/marker_green';
-const hostnameRegexp = new RegExp('^https?://.+?/');
-const locateButton = document.querySelector('button.locateButton');
-const searchButton = document.querySelector('button.search');
-const funButton = document.querySelector('.funFinder');
-
-let currentScript = document.getElementById('mapScript');
-let currentUserInterests = currentScript.getAttribute('data-user-interests');
-
-if (currentUserInterests) {
-  funTypes_UserOverride = JSON.parse(currentUserInterests);
-}
-
+// Function called async by Google Maps script
 function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    // center: {lat: 51.5007, lng: -0.12406},
-    center: londonCenter,
-    zoom: londonZoom,
-    mapTypeControl: false,
-    streetViewControl: false,
-    backgroundColor: 'rgb(242, 255, 254)'
-    // draggable: false,
-    // zoomControl: false,
-  });
-
-  infoWindow = new google.maps.InfoWindow({
-    content: document.getElementById('info-content')
-  });
-
-  geocoder = new google.maps.Geocoder();
-
-  locateButton.addEventListener('click', geolocateUser);
-  searchButton.addEventListener('click', () => {
-    hideLocatorButtons();
-    setTimeout(() => createAutocomplete(), 1000);
-  });
-  funButton.addEventListener('click', search);
+  const mapController = new MapController();
 }
 
-function geolocateUser() {
-  loadingGeolocation();
-  // Try HTML5 geolocation.
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(position => {
-      pos = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
+// Handles all map logic
+class MapController {
+  constructor() {
+    // Properties used by multiple methods
+    this.map;
+    this.places;
+    this.markers = [];
+    this.geocoder;
+    this.locations = [];
+    this.addresses = [];
+    this.funMarkers = [];
+    this.infoWindow;
+    this.autocomplete;
+    this.funLocations = [];
+    this.funTypes_UserOverride;
+    this.funButton = document.querySelector('.funFinder');
+    this.searchButton = document.querySelector('button.search');
+    this.locateButton = document.querySelector('button.locateButton');
 
-      locations.push(pos);
-      hideLocatorButtons();
-
-      // Waits till the locator button animation ends
-      setTimeout(() => {
-        createAutocomplete();
-        addFriendHolder(pos, spySrc);
-      }, 1000);
-
-      createMarkerClusterer();
-
-    }, () => {
-      handleLocationError(true, infoWindow, map.getCenter());
-    });
-  } else {
-    // Browser doesn't support Geolocation
-    handleLocationError(false, infoWindow, map.getCenter());
+    // Constants used by multiple methods
+    this.LONDON_ZOOM = 12;
+    this.DEFAULT_RADIUS = 1000;           // Upto 50,000
+    this.SPY_SRC = '/avatars/ninja.png';
+    this.LONDON_CENTER = {lat: 51.509, lng: -0.116};
+    this.FUN_PLACE_TYPES = [ 'amusement_park', 'aquarium', 'art_gallery', 'bakery',
+                              'bar', 'beauty_salon', 'book_store', 'bowling_alley',
+                              'cafe', 'campground', 'car_rental', 'casino', 'gym',
+                              'library', 'movie_theater', 'museum', 'night_club',
+                              'park', 'restaurant', 'rv_park', 'shopping_mall', 'spa',
+                              'stadium', 'zoo'
+                            ];
+    this.MARKER_PATH = 'https://developers.google.com/maps/documentation/javascript/images/marker_green';
+    this.CLUSTER_IMAGE = 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m';
+    // Methods called at instansiation
+    this._getUserPreferences();
+    this._createMap();
   }
-}
 
-function createAutocomplete() {
-  // replaces locations buttons with search bar
-  createSearchInput();
+  // Pulls logged in user location preferences
+  _getUserPreferences() {
 
-  const autocompleteInput = document.getElementById('autocomplete');
-  autocompleteInput.focus();
+    const currentScript = document.getElementById('mapScript');
+    const currentUserInterests = currentScript.getAttribute('data-user-interests');
 
-  autocomplete = new google.maps.places.Autocomplete(autocompleteInput);
-  places = new google.maps.places.PlacesService(map);
+    if (currentUserInterests) {
+      this.funTypes_UserOverride = JSON.parse(currentUserInterests);
+    }
+  }
 
-  autocomplete.addListener('place_changed', () => onPlaceChanged(autocompleteInput));
-}
+  // Creates map and adds button events
+  _createMap() {
+    // Creates map when google script is called centred on London
+    this.map = new google.maps.Map(document.getElementById('map'), {
+      center: this.LONDON_CENTER,
+      zoom: this.LONDON_ZOOM,
+      mapTypeControl: false,
+      streetViewControl: false,
+      backgroundColor: 'rgb(242, 255, 254)'
+    });
 
-function createSearchInput () {
-  const searchDiv = document.querySelector('#search');
-  searchDiv.classList.remove('hidden');
-}
+    // Sets class infoWindow variable
+    this.infoWindow = new google.maps.InfoWindow({
+      content: document.getElementById('info-content')
+    });
 
-function loadingGeolocation () {
-  const locateButton = document.querySelector('.locateButton');
-  locateButton.classList.add('loading');
-}
+    // Geocoder turns locations into coordinates
+    this.geocoder = new google.maps.Geocoder();
 
-function hideLocatorButtons() {
-  const locatorDiv = document.querySelector('#locator');
-  const locateButton = document.querySelector('.locateButton');
+    const mapController = this;
 
-  locateButton.classList.remove('loading', 'geo');
-  locateButton.textContent = '';
-  locateButton.classList.add('shrink');
-  setTimeout(() => locatorDiv.classList.add('hidden'), 1000);
-}
+    // Various event listeners control page logic
+    this.locateButton.addEventListener('click', () => mapController._geolocateUser());
+    this.searchButton.addEventListener('click', () => {
+      mapController._searchFunctionality();
+    });
+    this.funButton.addEventListener('click', () => mapController._funSearch());
+  }
 
-function addFriendHolder(location, imgSrc) {
-  const locatorParent = document.querySelector('.locatorParent');
-  const friendHolder = document.querySelector('#clone');
-  const fhCloned = friendHolder.cloneNode(true);
-  let resultCountry;
+  // Finds user based on device GPS
+  _geolocateUser() {
+    this._loadingGeolocation();
 
-  fhCloned.classList.remove('hidden');
-  fhCloned.id = '';
+    // Uses HTML5 geolocation if available
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
 
-  geocoder.geocode({ location: location }, (results, status) => {
-    if (status === google.maps.GeocoderStatus.OK) {
+        // Saves first location and hides buttons
+        this.locations.push(pos);
+        this._hideLocatorButtons();
 
-      if (results[0].formatted_address) {
-        addresses.push(results[0].formatted_address);
+        // Waits till the locator button animation ends
+        // Then adds friend holder box and search bar
+        setTimeout(() => {
+          this._createAutocomplete();
+          // Gives current user spy avatar
+          this._addFriendHolder(pos, this.SPY_SRC);
+        }, 1000);
 
-        const addressComponents_obj = results[0].address_components;
+        // Ensures markers in close proximity cluster
+        this._createMarkerClusterer();
 
-        for (let addressCompenent of addressComponents_obj) {
-          if (addressCompenent.types.includes('country')) {
-            resultCountry = addressCompenent.short_name;
-            unhideButtonsAndSetCountry(resultCountry);
-            break;
+      }, () => {
+        // Error handler if location is not found
+        this._handleLocationError(true, this.infoWindow, this.map.getCenter());
+      });
+    } else {
+      // Error handler if browser doesn't support Geolocation
+      this._handleLocationError(false, this.infoWindow, this.map.getCenter());
+    }
+  }
+
+  // Simulates loading as geolocation is found
+  _loadingGeolocation () {
+    const locateButton = document.querySelector('.locateButton');
+    locateButton.classList.add('loading');
+  }
+
+  _hideLocatorButtons() {
+    const locatorDiv = document.querySelector('#locator');
+    const locateButton = document.querySelector('.locateButton');
+
+    locateButton.classList.remove('loading', 'geo');
+    locateButton.textContent = '';
+    locateButton.classList.add('shrink');
+    setTimeout(() => locatorDiv.classList.add('hidden'), 1000);
+  }
+
+  // Creates google's autocomplete search bar
+  _createAutocomplete() {
+    // replaces locations buttons with search bar
+    this._createsearchInput();
+
+    const autocompleteInput = document.getElementById('autocomplete');
+    autocompleteInput.focus();
+
+    // Creates search functionality
+    this.autocomplete = new google.maps.places.Autocomplete(autocompleteInput);
+    this.places = new google.maps.places.PlacesService(this.map);
+
+    const mapController = this;
+    this.autocomplete.addListener('place_changed', () => mapController._onPlaceChanged(autocompleteInput));
+  }
+
+  _createsearchInput () {
+    const searchDiv = document.querySelector('#search');
+    searchDiv.classList.remove('hidden');
+  }
+
+  // Calls markerClusterer and deletes search bar input
+  _onPlaceChanged(inputElement) {
+    const place = this.autocomplete.getPlace();
+
+    inputElement.value = '';
+    inputElement.focus();
+
+    if (place && place.geometry && place.geometry.location) {
+      const location = place.geometry.location.toJSON();
+      this.locations.push(location);
+      this._createMarkerClusterer();
+      this._addFriendHolder(location);
+    }
+  }
+
+  // Places markers + ensures marker clustering
+  _createMarkerClusterer(){
+    const labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lastLocationIndex = this.locations.length - 1;
+    const mapController = this;
+
+    // Creates map markers and pushes into markers array
+    this.markers.push(new google.maps.Marker({
+      position: mapController.locations[lastLocationIndex],
+      label: labels[lastLocationIndex % labels.length],
+      animation: google.maps.Animation.DROP
+    }));
+
+    // Makes close markers cluster
+    const markerCluster = new MarkerClusterer(this.map, this.markers,
+      {imagePath: this.CLUSTER_IMAGE});
+
+    // Adjust map's zoom and center point
+    this._setZoomAndCenter(this.locations);
+  }
+
+  // // Finds mid point of array of coordinates
+  // _getMidPoint(locations) {
+  //   const lats = [];
+  //   const lngs = [];
+  //   const avgCoords = {};
+  //   let maxLat, minLat, maxLng, minLng;
+  //
+  //   // Destructures location objects
+  //   locations.forEach((location) => {
+  //     lats.push(location.lat);
+  //     lngs.push(location.lng);
+  //   });
+  //
+  //   // Finds lat and lng boundries
+  //   maxLat = Math.max(...lats);
+  //   minLat = Math.min(...lats);
+  //   maxLng = Math.max(...lngs);
+  //   minLng = Math.min(...lngs);
+  //
+  //   // Finds mid point on map
+  //   avgCoords.lat = this._average([minLat, maxLat]);
+  //   avgCoords.lng = this._average([minLng, maxLng]);
+  //
+  //   return avgCoords;
+  // }
+  //
+  // // Finds average of array values
+  // _average(arr) {
+  //   let sum = 0;
+  //   for (let index of arr) {
+  //     sum += index;
+  //   }
+  //   return sum / arr.length;
+  // }
+  //
+  // // Chooses appropriate zoom level
+  // _findZoomLevel(locations) {
+  //
+  //   // Constants that work on current map size (needs to be dynamic)
+  //   const latIncrement = 0.00137;
+  //   const lngIncrement = 0.0038;
+  //   const zoomLevels = [
+  //     18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+  //   ];
+  //
+  //   const lats = [];
+  //   const lngs = [];
+  //
+  //   let maxLat, minLat, maxLng, minLng;
+  //   let latRange, lngRange;
+  //   let latZoomIndex, lngZoomIndex, latZoomLevel, lngZoomLevel;
+  //   let zoomLevel;
+  //
+  //   // Destructures location objects
+  //   locations.forEach((location) => {
+  //     lats.push(location.lat);
+  //     lngs.push(location.lng);
+  //   });
+  //
+  //   // Finds lat and lng boundries
+  //   maxLat = Math.max(...lats);
+  //   minLat = Math.min(...lats);
+  //   maxLng = Math.max(...lngs);
+  //   minLng = Math.min(...lngs);
+  //
+  //   latRange = maxLat - minLat;
+  //   lngRange = maxLng - minLng;
+  //
+  //   // Choose ideal zoom index for lats and lngs
+  //   latZoomIndex = Math.ceil((Math.log(latRange) - Math.log(latIncrement)) / Math.log(2));
+  //   lngZoomIndex = Math.ceil((Math.log(lngRange) - Math.log(lngIncrement)) / Math.log(2));
+  //
+  //   // Chooses ideal zoom level for lat
+  //   if (latZoomIndex < 0) {
+  //     latZoomLevel = 18;
+  //   } else if(latZoomIndex <= 17) {
+  //     latZoomLevel = zoomLevels[latZoomIndex];
+  //   } else {
+  //     latZoomLevel = 1;
+  //   }
+  //
+  //   // Chooses ideal zoom level for lat
+  //   if (lngZoomIndex < 0) {
+  //     lngZoomLevel = 18;
+  //   } else if (lngZoomIndex <= 17) {
+  //     lngZoomLevel = zoomLevels[lngZoomIndex];
+  //   } else {
+  //     lngZoomLevel = 1;
+  //   }
+  //
+  //   // Finds minimum zoom level of lat and lng
+  //   zoomLevel = Math.min(latZoomLevel, lngZoomLevel);
+  //
+  //   return zoomLevel;
+  // }
+  //
+  
+  // Adjusts map's zoom and center point
+  _setZoomAndCenter(locations, msTimeOut) {
+
+    // Optional parameter that creates a lag for effect
+    if (!msTimeOut) {
+      let msTimeOut = 0;
+    }
+
+    let bounds = new google.maps.LatLngBounds();
+
+    // Extends bounds for each location
+    locations.forEach((location) => {
+      const locationLatLng = new google.maps.LatLng({
+        lat: location.lat,
+        lng: location.lng
+      })
+      bounds.extend(locationLatLng);
+    });
+
+    // Sets zoom and center based on bounds
+    if (locations.length === 1) {
+      setTimeout(() => {
+        this.map.setCenter(bounds.getCenter());
+        // If only one location, uses zoom level 18
+        this.map.setZoom(18);
+      }, msTimeOut);
+
+    } else {
+      setTimeout(() => {
+        this.map.setCenter(bounds.getCenter());
+        this.map.fitBounds(bounds, 33);
+      }, msTimeOut);
+    }
+
+  }
+
+  // Adds friend holder with optional avatar parameter
+  _addFriendHolder(location, imgSrc) {
+    const locatorParent = document.querySelector('.locatorParent');
+    const friendHolder = document.querySelector('#clone');
+    const fhCloned = friendHolder.cloneNode(true);
+    let resultCountry;
+
+    // Shows friend holder
+    fhCloned.classList.remove('hidden');
+    fhCloned.id = '';
+
+    // Translates coordinates into location
+    this.geocoder.geocode({ location: location }, (results, status) => {
+      if (status === google.maps.GeocoderStatus.OK) {
+
+        if (results[0].formatted_address) {
+          // Pushs address into addresses array
+          this.addresses.push(results[0].formatted_address);
+
+          const addressComponents_obj = results[0].address_components;
+
+          // Sets search restrictions to first country chosen
+          for (let addressCompenent of addressComponents_obj) {
+            if (addressCompenent.types.includes('country')) {
+              resultCountry = addressCompenent.short_name;
+              this._setCountryAndUnhideFriendFinder(resultCountry);
+              break;
+            }
           }
+
+        } else {
+          // If first result has no formatted address
+          this.addresses.push('Not available...');
         }
 
-      } else {
-        // If first result has no formatted address
-        addresses.push('Not available...');
+        // Enters found location into friend holder paragraph
+        const addressParagraph = fhCloned.children[0].children[1].children[0];
+        addressParagraph.textContent = this.addresses[this.addresses.length - 1];
       }
+    })
 
-      const addressParagraph = fhCloned.childNodes[1].childNodes[3].childNodes[1];
-      addressParagraph.textContent = addresses[addresses.length - 1];
+    // Enters optional avatar into friend holder img
+    if (imgSrc) {
+      const img = fhCloned.children[0].children[0];
+      img.src = imgSrc;
     }
-  })
 
-  if (imgSrc) {
-    const img = fhCloned.childNodes[1].childNodes[1];
-    img.src = imgSrc;
+    // Adds friend holder into DOM
+    locatorParent.insertBefore(fhCloned, friendHolder);
   }
 
-  locatorParent.insertBefore(fhCloned, friendHolder);
-}
+  // Called by search button or error
+  _searchFunctionality(isError) {
+    this._hideLocatorButtons();
+    setTimeout(() => this._createAutocomplete(), 1000);
 
-function unhideButtonsAndSetCountry(country) {
-  if (locations.length === 1) {
-    setCountryRestriction(country);
-    const reloadIcon = document.getElementById('reloadMap');
-    const autocompleteInput = document.getElementById('autocomplete');
-
-    reloadIcon.classList.remove('disabled');
-    reloadIcon.classList.add('pointer');
-
-    reloadIcon.addEventListener('click', () => {
-      window.location.reload();
-    });
-
-    autocompleteInput.placeholder = 'Where are your friends?';
-
-  } else if (locations.length === 2) {
-    const funFinderDiv = document.getElementById('funFinderDiv');
-    funFinderDiv.classList.remove('hidden');
-  }
-}
-
-function onPlaceChanged(inputElement) {
-  let place = autocomplete.getPlace();
-
-  inputElement.value = '';
-  inputElement.focus();
-
-  if (place && place.geometry && place.geometry.location) {
-    let location = place.geometry.location.toJSON();
-    locations.push(location);
-    createMarkerClusterer();
-    addFriendHolder(location);
-  }
-}
-
-function search(radius) {
-
-  const search = {
-    location: map.getCenter(),
-    radius: radius || DEFAULT_RADIUS,                // Upto 50 000
-    types: funTypes_UserOverride || FUN_PLACE_TYPES,
-    openNow: true,
-    rankBy: google.maps.places.RankBy.PROMINENCE
+    // Closes infoWindow once error is handled
+    if (isError) {
+      setTimeout(() => this.infoWindow.close(), 2500);
+    }
   }
 
-  places.nearbySearch(search, (results, status) => {
-    if (status === google.maps.places.PlacesServiceStatus.OK) {
+  _setCountryAndUnhideFriendFinder(country) {
 
-      // Checks if number of results is less than max results shown
-      let maxResults = 5;
-      if (results.length < 5) {
-        maxResults = results.length;
-      }
+    // Sets country restriction based on 1st location
+    if (this.locations.length === 1) {
+      this._setCountryRestriction(country);
+      const reloadIcon = document.getElementById('reloadMap');
+      const autocompleteInput = document.getElementById('autocomplete');
 
-      // Create a marker for each fun place found, and assign letter
-      for (let i = 0; i < maxResults; i++) {
-        let markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
-        let markerIcon = MARKER_PATH + markerLetter + '.png';
+      reloadIcon.classList.remove('disabled');
+      reloadIcon.classList.add('pointer');
 
-        // Use marker animation to drop the icons incrementally on the map
-        funMarkers[i] = new google.maps.Marker({
-          position: results[i].geometry.location,
-          animation: google.maps.Animation.DROP,
-          icon: markerIcon
-        });
-        funLocations.push(results[i].geometry.location.toJSON());
+      reloadIcon.addEventListener('click', () => {
+        window.location.reload();
+      });
 
-        // If the user clicks a marker, show the details in the info window
-        funMarkers[i].placeResult = results[i];
-        google.maps.event.addListener(funMarkers[i], 'click', showInfoWindow);
-        setTimeout(dropMarker(i), i * 100);
+      autocompleteInput.placeholder = 'Where are your friends?';
+
+    // Activates fun finder button for >=2 locations
+    } else if (this.locations.length === 2) {
+      const funFinderDiv = document.getElementById('funFinderDiv');
+      funFinderDiv.classList.remove('hidden');
+    }
+  }
+
+  // Sets search restriction to first country
+  _setCountryRestriction(country) {
+    const countryRestrict = {'country': country};
+    this.autocomplete.setOptions({ componentRestrictions: countryRestrict });
+  }
+
+  _handleLocationError(browserHasGeolocation, infoWindow, pos) {
+    // Shows user error message
+    this.infoWindow.setPosition(pos);
+    this.infoWindow.setContent(browserHasGeolocation ?
+                          'Error: The Geolocation service failed.' :
+                          'Error: Your browser doesn\'t support geolocation.');
+    this.infoWindow.open(this.map);
+
+    // Sets up search bar to find locations
+    this._searchFunctionality(true);
+  }
+
+  // Searches for fun places based on mid point
+  _funSearch(radius) {
+    const mapController = this;
+
+    // Sets search location
+    const search = {
+      location: mapController.map.getCenter(),
+      radius: radius || mapController.DEFAULT_RADIUS,
+      types: mapController.funTypes_UserOverride || mapController.FUN_PLACE_TYPES,
+      openNow: true,
+      rankBy: google.maps.places.RankBy.PROMINENCE
+    }
+
+    // Searches with Googles places library
+    this.places.nearbySearch(search, (results, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+
+        // Checks if number of results is less than max results shown
+        let maxResults = 5;
+        if (results.length < 5) {
+          maxResults = results.length;
+        }
+
+        // Creates a marker for each fun place found, and assigns letter
+        for (let i = 0; i < maxResults; i++) {
+          const markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
+          const markerIcon = this.MARKER_PATH + markerLetter + '.png';
+
+          // Use marker animation to drop the icons incrementally on the map
+          this.funMarkers[i] = new google.maps.Marker({
+            position: results[i].geometry.location,
+            animation: google.maps.Animation.DROP,
+            icon: markerIcon
+          });
+
+          // Saves fun locations to array
+          this.funLocations.push(results[i].geometry.location.toJSON());
+
+          // If the user clicks a marker, show the details in the info window
+          this.funMarkers[i].placeResult = results[i];
+          google.maps.event.addListener(mapController.funMarkers[i], 'click', () => {
+            const marker = mapController.funMarkers[i];
+            mapController._showInfoWindow(marker);
+          });
+
+          // Drops markers onto map
+          setTimeout(() => {
+            this.funMarkers[i].setMap(this.map);
+          }, i * 100);
+        }
 
         // Zooms into locations once they have been decided
-        setTimeout(() => {
-          map.setZoom(getZoomLevel(funLocations));
-          map.panTo(getMidPoint(funLocations));
-        }, 2300);
+        // Uses 2300ms timeout for effect
+        this._setZoomAndCenter(this.funLocations, 2300);
+
+      } else {
+        // If no results are found, searches again with larger radius
+        this._reSearch(radius);
+      }
+    });
+  }
+
+  _showInfoWindow(marker) {
+    // Shows information about location
+    this.places.getDetails({placeId: marker.placeResult.place_id},
+        (place, status) => {
+          if (status !== google.maps.places.PlacesServiceStatus.OK) {
+            return;
+          }
+          this.infoWindow.open(this.map, marker);
+          this._buildIWContent(place);
+        });
+  }
+
+  // Adds location info to hidden table on page
+  _buildIWContent(place) {
+    document.getElementById('iw-icon').innerHTML = '<img class="funPlaceIcon" ' +
+        'src="' + place.icon + '"/>';
+    document.getElementById('iw-url').innerHTML = '<b><a href="' + place.url +
+        '">' + place.name + '</a></b>';
+    document.getElementById('iw-address').textContent = place.vicinity;
+
+    if (place.formatted_phone_number) {
+      document.getElementById('iw-phone-row').style.display = '';
+      document.getElementById('iw-phone').textContent =
+          place.formatted_phone_number;
+    } else {
+      document.getElementById('iw-phone-row').style.display = 'none';
+    }
+
+    // Assign a five-star rating to the location, using a black star ('&#10029;')
+    // to indicate the rating the location has earned, and a white star ('&#10025;')
+    // for the rating points not achieved.
+    if (place.rating) {
+      let ratingHtml = '';
+      for (let i = 0; i < 5; i++) {
+        if (place.rating < (i + 0.5)) {
+          ratingHtml += '&#10025;';
+        } else {
+          ratingHtml += '&#10029;';
+        }
+      document.getElementById('iw-rating-row').style.display = '';
+      document.getElementById('iw-rating').innerHTML = ratingHtml;
       }
     } else {
-      reSearch(radius);
+      document.getElementById('iw-rating-row').style.display = 'none';
     }
-  });
-}
 
-function reSearch(oldRadius) {
-  let newRadius;
-
-  if (oldRadius) {
-    newRadius = oldRadius * 1.5;
-  } else {
-    newRadius = DEFAULT_RADIUS * 1.5;
-  }
-
-  search(newRadius);
-}
-
-function dropMarker(i) {
-  return function() {
-    funMarkers[i].setMap(map);
-  };
-}
-
-function showInfoWindow() {
-  let marker = this;
-  places.getDetails({placeId: marker.placeResult.place_id},
-      (place, status) => {
-        if (status !== google.maps.places.PlacesServiceStatus.OK) {
-          return;
-        }
-        infoWindow.open(map, marker);
-        buildIWContent(place);
-      });
-}
-
-function buildIWContent(place) {
-  document.getElementById('iw-icon').innerHTML = '<img class="funPlaceIcon" ' +
-      'src="' + place.icon + '"/>';
-  document.getElementById('iw-url').innerHTML = '<b><a href="' + place.url +
-      '">' + place.name + '</a></b>';
-  document.getElementById('iw-address').textContent = place.vicinity;
-
-  if (place.formatted_phone_number) {
-    document.getElementById('iw-phone-row').style.display = '';
-    document.getElementById('iw-phone').textContent =
-        place.formatted_phone_number;
-  } else {
-    document.getElementById('iw-phone-row').style.display = 'none';
-  }
-
-  // Assign a five-star rating to the hotel, using a black star ('&#10029;')
-  // to indicate the rating the hotel has earned, and a white star ('&#10025;')
-  // for the rating points not achieved.
-  if (place.rating) {
-    let ratingHtml = '';
-    for (let i = 0; i < 5; i++) {
-      if (place.rating < (i + 0.5)) {
-        ratingHtml += '&#10025;';
-      } else {
-        ratingHtml += '&#10029;';
+    // The regexp isolates the first part of the URL (domain plus subdomain)
+    // to give a short URL for displaying in the info window.
+    if (place.website) {
+      const hostnameRegexp = new RegExp('^https?://.+?/');
+      let fullUrl = place.website;
+      let website = hostnameRegexp.exec(place.website);
+      if (website === null) {
+        website = 'http://' + place.website + '/';
+        fullUrl = website;
       }
-    document.getElementById('iw-rating-row').style.display = '';
-    document.getElementById('iw-rating').innerHTML = ratingHtml;
+      document.getElementById('iw-website-row').style.display = '';
+      document.getElementById('iw-website').textContent = website;
+    } else {
+      document.getElementById('iw-website-row').style.display = 'none';
     }
-  } else {
-    document.getElementById('iw-rating-row').style.display = 'none';
   }
 
-  // The regexp isolates the first part of the URL (domain plus subdomain)
-  // to give a short URL for displaying in the info window.
-  if (place.website) {
-    let fullUrl = place.website;
-    let website = hostnameRegexp.exec(place.website);
-    if (website === null) {
-      website = 'http://' + place.website + '/';
-      fullUrl = website;
+  // Increases radius and calls search
+  _reSearch(oldRadius) {
+    let newRadius;
+
+    // Sets larger radius
+    if (oldRadius) {
+      newRadius = oldRadius * 1.5;
+    } else {
+      newRadius = this.DEFAULT_RADIUS * 1.5;
     }
-    document.getElementById('iw-website-row').style.display = '';
-    document.getElementById('iw-website').textContent = website;
-  } else {
-    document.getElementById('iw-website-row').style.display = 'none';
+
+    this._funSearch(newRadius);
   }
-}
-
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-  infoWindow.setPosition(pos);
-  infoWindow.setContent(browserHasGeolocation ?
-                        'Error: The Geolocation service failed.' :
-                        'Error: Your browser doesn\'t support geolocation.');
-  infoWindow.open(map);
-}
-
-function createMarkerClusterer(){
-  // Marker clusters
-  let labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let lastLocationIndex = locations.length - 1;
-  markers.push(new google.maps.Marker({
-    position: locations[lastLocationIndex],
-    label: labels[lastLocationIndex % labels.length],
-    animation: google.maps.Animation.DROP
-  }));
-
-  //   .map((location, i) => {
-  //   return new google.maps.Marker({
-  //     position: location,
-  //     label: labels[i % labels.length],
-  //     animation: google.maps.Animation.DROP
-  //   });
-  // })
-
-  let markerCluster = new MarkerClusterer(map, markers,
-        {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-
-  let midPoint = getMidPoint(locations);
-  let zoomLevel = getZoomLevel(locations);
-
-  map.setCenter(midPoint);
-  map.setZoom(zoomLevel);
-}
-
-function getMidPoint(locations) {
-  let lats = []
-  let lngs = [];
-  let avgCoords = {};
-  let maxLat, minLat, maxLng, minLng;
-
-  locations.forEach((location) => {
-    lats.push(location.lat);
-    lngs.push(location.lng);
-  });
-
-  maxLat = Math.max(...lats);
-  minLat = Math.min(...lats);
-  maxLng = Math.max(...lngs);
-  minLng = Math.min(...lngs);
-
-  avgCoords.lat = average([minLat, maxLat]);
-  avgCoords.lng = average([minLng, maxLng]);
-
-  return avgCoords;
-}
-
-function average(arr) {
-  let sum = 0;
-  for (let index of arr) {
-    sum += index;
-  }
-  return sum / arr.length;
-}
-
-function getZoomLevel(locations) {
-
-  const latIncrement = 0.00137;
-  const lngIncrement = 0.0038;
-  const zoomLevels = [
-    18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
-  ];
-
-  let lats = [];
-  let lngs = [];
-
-  let maxLat, minLat, maxLng, minLng;
-  let latRange, lngRange;
-  let latZoomIndex, lngZoomIndex, latZoomLevel, lngZoomLevel;
-  let zoomLevel;
-
-  locations.forEach((location) => {
-    lats.push(location.lat);
-    lngs.push(location.lng);
-  });
-
-  maxLat = Math.max(...lats);
-  minLat = Math.min(...lats);
-  maxLng = Math.max(...lngs);
-  minLng = Math.min(...lngs);
-
-  latRange = maxLat - minLat;
-  lngRange = maxLng - minLng;
-
-  latZoomIndex = Math.ceil((Math.log(latRange) - Math.log(latIncrement)) / Math.log(2));
-  lngZoomIndex = Math.ceil((Math.log(lngRange) - Math.log(lngIncrement)) / Math.log(2));
-
-  if (latZoomIndex < 0) {
-    latZoomLevel = 18;
-  } else if(latZoomIndex <= 17) {
-    latZoomLevel = zoomLevels[latZoomIndex];
-  } else {
-    latZoomLevel = 1;
-  }
-
-  if (lngZoomIndex < 0) {
-    lngZoomLevel = 18;
-  } else if (lngZoomIndex <= 17) {
-    lngZoomLevel = zoomLevels[lngZoomIndex];
-  } else {
-    lngZoomLevel = 1;
-  }
-
-  zoomLevel = Math.min(latZoomLevel, lngZoomLevel);
-
-  return zoomLevel;
-}
-
-function setCountryRestriction(country) {
-  const countryRestrict = {'country': country};
-  autocomplete.setOptions({ componentRestrictions: countryRestrict });
-}
-
-// Not being used at the moment as is very buggy
-function resetPage() {
-  locations = [];
-  const locateButton = document.querySelector('.locateButton');
-  const fHolders = document.querySelectorAll('.friendHolder');
-  const searchDiv = document.getElementById('search');
-  const locatorDiv = document.getElementById('locator');
-  const funFinderDiv = document.getElementById('funFinderDiv');
-
-  locateButton.classList.add('geo');
-  locateButton.innerHTML = '<i class="marker icon"></i>Locate Me';
-  locateButton.classList.remove('shrink');
-
-  for (let fHolder of fHolders) {
-    fHolder.classList.add('hidden');
-  }
-  searchDiv.classList.add('hidden');
-  funFinderDiv.classList.add('hidden');
-  locatorDiv.classList.remove('hidden');
-
-
-  for (let marker of markers) {
-    marker.setVisible(false);
-    marker.setMap(null);
-  }
-  markers = [];
-
-  for (let funMarker of funMarkers) {
-    funMarker.setVisible(false);
-    funMarker.setMap(null);
-  }
-  funMarkers = [];
-
-  map.panTo(londonCenter);
-  map.setZoom(londonZoom);
 
 }

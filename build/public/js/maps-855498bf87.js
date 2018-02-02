@@ -1,5 +1,9 @@
 'use strict';
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 var map = void 0,
     infoWindow = void 0,
     pos = void 0,
@@ -41,32 +45,48 @@ if (currentUserInterests) {
   funTypes_UserOverride = JSON.parse(currentUserInterests);
 }
 
+var Map = function () {
+  function Map() {
+    _classCallCheck(this, Map);
+
+    this.makeMap();
+    console.log('Hello!');
+  }
+
+  _createClass(Map, [{
+    key: 'makeMap',
+    value: function makeMap() {
+      console.log('Hello!');
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: londonCenter,
+        zoom: londonZoom,
+        mapTypeControl: false,
+        streetViewControl: false,
+        backgroundColor: 'rgb(242, 255, 254)'
+      });
+
+      infoWindow = new google.maps.InfoWindow({
+        content: document.getElementById('info-content')
+      });
+
+      geocoder = new google.maps.Geocoder();
+
+      locateButton.addEventListener('click', geolocateUser);
+      searchButton.addEventListener('click', function () {
+        hideLocatorButtons();
+        setTimeout(function () {
+          return createAutocomplete();
+        }, 1000);
+      });
+      funButton.addEventListener('click', search);
+    }
+  }]);
+
+  return Map;
+}();
+
 function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    // center: {lat: 51.5007, lng: -0.12406},
-    center: londonCenter,
-    zoom: londonZoom,
-    mapTypeControl: false,
-    streetViewControl: false,
-    backgroundColor: 'rgb(242, 255, 254)'
-    // draggable: false,
-    // zoomControl: false,
-  });
-
-  infoWindow = new google.maps.InfoWindow({
-    content: document.getElementById('info-content')
-  });
-
-  geocoder = new google.maps.Geocoder();
-
-  locateButton.addEventListener('click', geolocateUser);
-  searchButton.addEventListener('click', function () {
-    hideLocatorButtons();
-    setTimeout(function () {
-      return createAutocomplete();
-    }, 1000);
-  });
-  funButton.addEventListener('click', search);
+  var mapInstance = new Map();
 }
 
 function geolocateUser() {

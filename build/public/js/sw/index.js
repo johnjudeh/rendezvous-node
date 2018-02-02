@@ -77,4 +77,4 @@ var ServiceWorker = function () {
   return ServiceWorker;
 }();
 
-var serviceWorker = new ServiceWorker();
+// const serviceWorker = new ServiceWorker();

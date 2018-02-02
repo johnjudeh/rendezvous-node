@@ -1,4 +1,4 @@
-const staticCacheName = 'rendezvous-static-v3';
+const staticCacheName = 'rendezvous-static-v4';
 const cacheWhiteList = [ staticCacheName ];
 
 // Event fires when service worker is first discovered
@@ -47,6 +47,14 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.open(staticCacheName).then(cache => {
       return cache.match(event.request).then(response => {
+        // Ensures that no-cache resources are checked with server
+        if (response && response.headers.has('cache-control')) {
+          if (response.headers.get('cache-control') === 'no-cache') {
+            return fetch(event.request).catch(() => {
+              return response;
+            });
+          }
+        }
         // Do not need updating as they are static
         return response || fetch(event.request);
       })

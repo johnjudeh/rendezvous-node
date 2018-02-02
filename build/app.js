@@ -24,9 +24,9 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public', {
   etag: true, // generates etag automatically
-  lastModified: true, // sets last-modified on os
-  maxAge: 31536000000, // time in ms (not s)
-  immutable: true,
+  // lastModified: true,     // sets last-modified on os
+  // maxAge: 31536000000,    // time in ms (not s)
+  // immutable: true,
   setHeaders: function setHeaders(res, path, stat) {
     // Ensures service worker always validated with server
     if (path.indexOf('sw') >= 0) {
