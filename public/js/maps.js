@@ -5,6 +5,8 @@ function initMap() {
 
 // Handles all map logic
 class MapController {
+
+  // Sets variables and calls initial methods
   constructor() {
     // Properties used by multiple methods
     this.map;
@@ -124,6 +126,7 @@ class MapController {
     locateButton.classList.add('loading');
   }
 
+   // Hides buttons
   _hideLocatorButtons() {
     const locatorDiv = document.querySelector('#locator');
     const locateButton = document.querySelector('.locateButton');
@@ -150,6 +153,7 @@ class MapController {
     this.autocomplete.addListener('place_changed', () => mapController._onPlaceChanged(autocompleteInput));
   }
 
+  // Creates the map search bar
   _createsearchInput () {
     const searchDiv = document.querySelector('#search');
     searchDiv.classList.remove('hidden');
@@ -191,103 +195,6 @@ class MapController {
     this._setZoomAndCenter(this.locations);
   }
 
-  // // Finds mid point of array of coordinates
-  // _getMidPoint(locations) {
-  //   const lats = [];
-  //   const lngs = [];
-  //   const avgCoords = {};
-  //   let maxLat, minLat, maxLng, minLng;
-  //
-  //   // Destructures location objects
-  //   locations.forEach((location) => {
-  //     lats.push(location.lat);
-  //     lngs.push(location.lng);
-  //   });
-  //
-  //   // Finds lat and lng boundries
-  //   maxLat = Math.max(...lats);
-  //   minLat = Math.min(...lats);
-  //   maxLng = Math.max(...lngs);
-  //   minLng = Math.min(...lngs);
-  //
-  //   // Finds mid point on map
-  //   avgCoords.lat = this._average([minLat, maxLat]);
-  //   avgCoords.lng = this._average([minLng, maxLng]);
-  //
-  //   return avgCoords;
-  // }
-  //
-  // // Finds average of array values
-  // _average(arr) {
-  //   let sum = 0;
-  //   for (let index of arr) {
-  //     sum += index;
-  //   }
-  //   return sum / arr.length;
-  // }
-  //
-  // // Chooses appropriate zoom level
-  // _findZoomLevel(locations) {
-  //
-  //   // Constants that work on current map size (needs to be dynamic)
-  //   const latIncrement = 0.00137;
-  //   const lngIncrement = 0.0038;
-  //   const zoomLevels = [
-  //     18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
-  //   ];
-  //
-  //   const lats = [];
-  //   const lngs = [];
-  //
-  //   let maxLat, minLat, maxLng, minLng;
-  //   let latRange, lngRange;
-  //   let latZoomIndex, lngZoomIndex, latZoomLevel, lngZoomLevel;
-  //   let zoomLevel;
-  //
-  //   // Destructures location objects
-  //   locations.forEach((location) => {
-  //     lats.push(location.lat);
-  //     lngs.push(location.lng);
-  //   });
-  //
-  //   // Finds lat and lng boundries
-  //   maxLat = Math.max(...lats);
-  //   minLat = Math.min(...lats);
-  //   maxLng = Math.max(...lngs);
-  //   minLng = Math.min(...lngs);
-  //
-  //   latRange = maxLat - minLat;
-  //   lngRange = maxLng - minLng;
-  //
-  //   // Choose ideal zoom index for lats and lngs
-  //   latZoomIndex = Math.ceil((Math.log(latRange) - Math.log(latIncrement)) / Math.log(2));
-  //   lngZoomIndex = Math.ceil((Math.log(lngRange) - Math.log(lngIncrement)) / Math.log(2));
-  //
-  //   // Chooses ideal zoom level for lat
-  //   if (latZoomIndex < 0) {
-  //     latZoomLevel = 18;
-  //   } else if(latZoomIndex <= 17) {
-  //     latZoomLevel = zoomLevels[latZoomIndex];
-  //   } else {
-  //     latZoomLevel = 1;
-  //   }
-  //
-  //   // Chooses ideal zoom level for lat
-  //   if (lngZoomIndex < 0) {
-  //     lngZoomLevel = 18;
-  //   } else if (lngZoomIndex <= 17) {
-  //     lngZoomLevel = zoomLevels[lngZoomIndex];
-  //   } else {
-  //     lngZoomLevel = 1;
-  //   }
-  //
-  //   // Finds minimum zoom level of lat and lng
-  //   zoomLevel = Math.min(latZoomLevel, lngZoomLevel);
-  //
-  //   return zoomLevel;
-  // }
-  //
-  
   // Adjusts map's zoom and center point
   _setZoomAndCenter(locations, msTimeOut) {
 
@@ -349,7 +256,7 @@ class MapController {
           for (let addressCompenent of addressComponents_obj) {
             if (addressCompenent.types.includes('country')) {
               resultCountry = addressCompenent.short_name;
-              this._setCountryAndUnhideFriendFinder(resultCountry);
+              this._setCountryAndUnhideFunFinder(resultCountry);
               break;
             }
           }
@@ -386,7 +293,8 @@ class MapController {
     }
   }
 
-  _setCountryAndUnhideFriendFinder(country) {
+  // Shows fun finder button and sets country restriction
+  _setCountryAndUnhideFunFinder(country) {
 
     // Sets country restriction based on 1st location
     if (this.locations.length === 1) {
@@ -416,6 +324,7 @@ class MapController {
     this.autocomplete.setOptions({ componentRestrictions: countryRestrict });
   }
 
+  // Geolocation error handler
   _handleLocationError(browserHasGeolocation, infoWindow, pos) {
     // Shows user error message
     this.infoWindow.setPosition(pos);
@@ -490,6 +399,7 @@ class MapController {
     });
   }
 
+  // Dispaly location info window
   _showInfoWindow(marker) {
     // Shows information about location
     this.places.getDetails({placeId: marker.placeResult.place_id},
