@@ -354,10 +354,12 @@ class MapController {
     this.places.nearbySearch(search, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
 
-        // Checks if number of results is less than max results shown
         let maxResults = 5;
+
+        // If too few results, search is rerun
         if (results.length < 5) {
-          maxResults = results.length;
+          this._reSearch(radius);
+          return;
         }
 
         // Creates a marker for each fun place found, and assigns letter

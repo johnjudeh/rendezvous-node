@@ -443,7 +443,9 @@ var MapController = function () {
           // Checks if number of results is less than max results shown
           var maxResults = 5;
           if (results.length < 5) {
-            maxResults = results.length;
+            // maxResults = results.length;
+            _this5._reSearch(radius);
+            return;
           }
 
           // Creates a marker for each fun place found, and assigns letter
