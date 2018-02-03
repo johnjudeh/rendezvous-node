@@ -1,0 +1,3 @@
+# Files & directories that git ignores
+
+node_modules/**

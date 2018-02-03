@@ -11,8 +11,11 @@ const expressSession         = require('express-session'),
       User                   = require('./models/user'),
       app                    = express();
 
+// Configure port for production & dev
+const port = process.env.PORT || 8080;
+
 // Connects to mongoDB
-mongoose.connect('mongodb://localhost/rendez_vous').then(() => {
+mongoose.connect(process.env.RV_DB_URL).then(() => {
   console.log('rendez_vous db connected!');
 }).catch((err) => {
   console.error(err);
@@ -20,7 +23,7 @@ mongoose.connect('mongodb://localhost/rendez_vous').then(() => {
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static('public', {
+app.use(express.static(`${__dirname}/public`, {
   etag: true,             // generates etag automatically
   lastModified: true,     // sets last-modified on os
   maxAge: 31536000000,    // time in ms (not s)
@@ -36,7 +39,7 @@ app.use(flash());
 
 // Passport configuration
 app.use(expressSession({
-   secret: 'emelda is a babe',
+   secret: process.env.SESSION_SECRET,
    resave: false,
    saveUninitialized: false
 }));
@@ -51,13 +54,14 @@ app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   res.locals.success     = req.flash('success');
   res.locals.error       = req.flash('error');
+  res.locals.MAPS_KEY    = process.env.MAPS_KEY;
   next();
-})
+});
 
 // Tells the application to use defined routes
 app.use('/', routes);
 
-app.listen(8080, () => {
-  console.log('Rendez-Vous Server ---> ON');
-  console.log('Listening on localhost:8080');
+app.listen(port, () => {
+  console.log(`Rendez-Vous Server ---> ON`);
+  console.log(`Listening on port: ${port}`);
 });
