@@ -2,7 +2,12 @@
   "name": "rendez-vous",
   "version": "1.0.0",
   "description": "An app that helps people in big cities connect.",
-  "keywords": [ "maps", "friends", "location", "activities" ],
+  "keywords": [
+    "maps",
+    "friends",
+    "location",
+    "activities"
+  ],
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
