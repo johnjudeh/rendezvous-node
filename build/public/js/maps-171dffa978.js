@@ -440,10 +440,10 @@ var MapController = function () {
       };this.places.nearbySearch(search, function (results, status) {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
 
-          // Checks if number of results is less than max results shown
           var maxResults = 5;
+
+          // If too few results, search is rerun
           if (results.length < 5) {
-            // maxResults = results.length;
             _this5._reSearch(radius);
             return;
           }
