@@ -10,7 +10,8 @@
   ],
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd ./build && node app.js"
   },
   "author": "John Judeh",
   "license": "ISC",
