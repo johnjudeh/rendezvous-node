@@ -36,7 +36,7 @@ var MapController = function () {
     // Constants used by multiple methods
     this.LONDON_ZOOM = 12;
     this.DEFAULT_RADIUS = 1000; // Upto 50,000
-    this.SPY_SRC = '/avatars/ninja.png';
+    this.SPY_SRC = '/avatars/ninja-6879220b2d.png';
     this.LONDON_CENTER = { lat: 51.509, lng: -0.116 };
     this.FUN_PLACE_TYPES = ['amusement_park', 'aquarium', 'art_gallery', 'bakery', 'bar', 'beauty_salon', 'book_store', 'bowling_alley', 'cafe', 'campground', 'car_rental', 'casino', 'gym', 'library', 'movie_theater', 'museum', 'night_club', 'park', 'restaurant', 'rv_park', 'shopping_mall', 'spa', 'stadium', 'zoo'];
     this.MARKER_PATH = 'https://developers.google.com/maps/documentation/javascript/images/marker_green';
