@@ -57,15 +57,16 @@ local system. The following variables are needed:
 1. **SESSION_SECRET** - must be set to any secret string used for express session
 1. **RV_DB_URL** - a mongoDB url must be used here. The recommended value for
 this is `mongodb://localhost/rendez_vous`
-1. **MAPS_KEY** - a free Google Javascript API key must be generated on the
+1. **MAPS_KEY** - a free Google Maps Javascript API key must be generated on the
 [Google API Console](https://console.developers.google.com/apis/). Make sure to
 read the terms and conditions on how the key is allowed to be used if you plan
 to develop further
 
 ### Running
 
-To run the application, type in `gulp` in the terminal. This will build the
-application into the build folder and start the server on localhost:8080.
+To run the application, make sure you are in the application's root directory
+and type `gulp` into the terminal. This will build the application into the build
+folder and start the server on localhost:8080.
 
 ## Built With
 
