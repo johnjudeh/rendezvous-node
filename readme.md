@@ -70,9 +70,9 @@ folder and start the server on localhost:8080.
 
 ## Built With
 
-[Express](https://expressjs.com/) - NodeJS framework used
-[mongoDB](https://www.mongodb.com/) - Database employed
-[SemanticUI](https://semantic-ui.com/) - Front-end library used
+* [Express](https://expressjs.com/) - NodeJS framework used
+* [mongoDB](https://www.mongodb.com/) - Database employed
+* [SemanticUI](https://semantic-ui.com/) - Front-end library used
 
 ## Author
 
