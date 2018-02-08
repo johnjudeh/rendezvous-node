@@ -1,3 +1,7 @@
+img, embed, object, video {
+  max-width: 100%;
+}
+
 body, .ui.menu, .ui.button, h1 {
   font-family: 'Roboto';
   font-weight: 400;
@@ -9,8 +13,12 @@ body {
   overflow: hidden;
 }
 
+.ui.menu {
+  border-radius: 0px;
+}
+
 .container.main {
-  margin-top: 8%;
+  margin-top:3.8%;
   height: 100%;
 }
 

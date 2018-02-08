@@ -1,3 +1,7 @@
+img, embed, object, video {
+  max-width: 100%;
+}
+
 body, .ui.button, h1 {
   font-family: 'Roboto';
   font-weight: 400;
