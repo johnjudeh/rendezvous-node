@@ -1,3 +1,45 @@
+// 1. NAVIGATION CONTROLLER
+
+// Handles page navigation logic
+class NavController {
+
+  // Sets variables and calls initial methods
+  constructor() {
+    // Creates class properties
+    this.arrowIcon = document.querySelector('.icon.angle.left');
+    this.friendFinder = document.querySelector('.locations');
+    this.body = document.body;
+
+    // Calls private class methods
+    this._manageEvents();
+  }
+
+  // Adds event listeners for Friend Holder navigation
+  _manageEvents() {
+    // Arrow icon opens the Friend Finder tab
+    this.arrowIcon.addEventListener('click', (event) => {
+      this.friendFinder.classList.toggle('open');
+    });
+
+    // Ensures that body event is not fired when clicking on
+    // Friend Finder
+    this.friendFinder.addEventListener('click', (event) => {
+      event.stopPropagation();
+    })
+
+    // Closes Friend Finder tab when the body is clicked
+    this.body.addEventListener('click', () => {
+      this.friendFinder.classList.remove('open');
+    });
+  }
+}
+
+// Initiates NavController on page load
+const navController = new NavController();
+
+
+// 2. MAP CONTROLLER
+
 // Function called async by Google Maps script
 function initMap() {
   const mapController = new MapController();
@@ -20,15 +62,18 @@ class MapController {
     this.autocomplete;
     this.funLocations = [];
     this.funTypes_UserOverride;
-    this.funButton = document.querySelector('.funFinder');
+    this.funButton = document.querySelector('.fun-finder-sec__fun-btn');
     this.searchButton = document.querySelector('button.search');
     this.locateButton = document.querySelector('button.locateButton');
 
     // Constants used by multiple methods
     this.LONDON_ZOOM = 12;
     this.DEFAULT_RADIUS = 1000;           // Upto 50,000
+    this.FH_TIMEOUT = 700;
+    this.CENTER_TIMEOUT = 2300;
+    this.ERROR_TIMEOUT = 2500;
     this.SPY_SRC = '/avatars/ninja.png';
-    this.LONDON_CENTER = {lat: 51.509, lng: -0.116};
+    this.LONDON_CENTER = {lat: 51.505, lng: -0.123};
     this.FUN_PLACE_TYPES = [ 'amusement_park', 'aquarium', 'art_gallery', 'bakery',
                               'bar', 'beauty_salon', 'book_store', 'bowling_alley',
                               'cafe', 'campground', 'car_rental', 'casino', 'gym',
@@ -62,6 +107,7 @@ class MapController {
       zoom: this.LONDON_ZOOM,
       mapTypeControl: false,
       streetViewControl: false,
+      fullscreenControl: false,
       backgroundColor: 'rgb(242, 255, 254)'
     });
 
@@ -76,10 +122,14 @@ class MapController {
     const mapController = this;
 
     // Various event listeners control page logic
-    this.locateButton.addEventListener('click', () => mapController._geolocateUser());
+    this.locateButton.addEventListener('click', () => {
+      mapController._geolocateUser()
+    }, {once: true});
+
     this.searchButton.addEventListener('click', () => {
       mapController._searchFunctionality();
-    });
+    }, {once: true});
+
     this.funButton.addEventListener('click', () => mapController._funSearch());
   }
 
@@ -96,7 +146,9 @@ class MapController {
         };
 
         // Saves first location and hides buttons
-        this.locations.push(pos);
+        this.locations.push({
+          coords: pos,
+        });
         this._hideLocatorButtons();
 
         // Waits till the locator button animation ends
@@ -105,7 +157,7 @@ class MapController {
           this._createAutocomplete();
           // Gives current user spy avatar
           this._addFriendHolder(pos, this.SPY_SRC);
-        }, 1000);
+        }, this.FH_TIMEOUT);
 
         // Ensures markers in close proximity cluster
         this._createMarkerClusterer();
@@ -134,7 +186,7 @@ class MapController {
     locateButton.classList.remove('loading', 'geo');
     locateButton.textContent = '';
     locateButton.classList.add('shrink');
-    setTimeout(() => locatorDiv.classList.add('hidden'), 1000);
+    setTimeout(() => locatorDiv.classList.add('hidden'), this.FH_TIMEOUT);
   }
 
   // Creates google's autocomplete search bar
@@ -168,7 +220,9 @@ class MapController {
 
     if (place && place.geometry && place.geometry.location) {
       const location = place.geometry.location.toJSON();
-      this.locations.push(location);
+      this.locations.push({
+        coords: location,
+      });
       this._createMarkerClusterer();
       this._addFriendHolder(location);
     }
@@ -179,11 +233,16 @@ class MapController {
     const labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const lastLocationIndex = this.locations.length - 1;
     const mapController = this;
+    const location = this.locations[lastLocationIndex];
+    const label = labels[lastLocationIndex % labels.length];
+
+    // Adds label to each location
+    location.label = label;
 
     // Creates map markers and pushes into markers array
     this.markers.push(new google.maps.Marker({
-      position: mapController.locations[lastLocationIndex],
-      label: labels[lastLocationIndex % labels.length],
+      position: location.coords,
+      label: label,
       animation: google.maps.Animation.DROP
     }));
 
@@ -208,8 +267,8 @@ class MapController {
     // Extends bounds for each location
     locations.forEach((location) => {
       const locationLatLng = new google.maps.LatLng({
-        lat: location.lat,
-        lng: location.lng
+        lat: location.coords.lat,
+        lng: location.coords.lng
       })
       bounds.extend(locationLatLng);
     });
@@ -233,7 +292,7 @@ class MapController {
 
   // Adds friend holder with optional avatar parameter
   _addFriendHolder(location, imgSrc) {
-    const locatorParent = document.querySelector('.locatorParent');
+    const locatorParent = document.querySelector('.locator-parent');
     const friendHolder = document.querySelector('#clone');
     const fhCloned = friendHolder.cloneNode(true);
     let resultCountry;
@@ -285,11 +344,11 @@ class MapController {
   // Called by search button or error
   _searchFunctionality(isError) {
     this._hideLocatorButtons();
-    setTimeout(() => this._createAutocomplete(), 1000);
+    setTimeout(() => this._createAutocomplete(), this.FH_TIMEOUT);
 
     // Closes infoWindow once error is handled
     if (isError) {
-      setTimeout(() => this.infoWindow.close(), 2500);
+      setTimeout(() => this.infoWindow.close(), this.ERROR_TIMEOUT);
     }
   }
 
@@ -313,7 +372,7 @@ class MapController {
 
     // Activates fun finder button for >=2 locations
     } else if (this.locations.length === 2) {
-      const funFinderDiv = document.getElementById('funFinderDiv');
+      const funFinderDiv = document.getElementById('fun-finder-div');
       funFinderDiv.classList.remove('hidden');
     }
   }
@@ -345,7 +404,7 @@ class MapController {
     const search = {
       location: mapController.map.getCenter(),
       radius: radius || mapController.DEFAULT_RADIUS,
-      types: mapController.funTypes_UserOverride || mapController.FUN_PLACE_TYPES,
+      type: mapController.funTypes_UserOverride || mapController.FUN_PLACE_TYPES,
       openNow: true,
       rankBy: google.maps.places.RankBy.PROMINENCE
     }
@@ -375,7 +434,10 @@ class MapController {
           });
 
           // Saves fun locations to array
-          this.funLocations.push(results[i].geometry.location.toJSON());
+          this.funLocations.push({
+            coords: results[i].geometry.location.toJSON(),
+            label: markerLetter
+          });
 
           // If the user clicks a marker, show the details in the info window
           this.funMarkers[i].placeResult = results[i];
@@ -392,13 +454,22 @@ class MapController {
 
         // Zooms into locations once they have been decided
         // Uses 2300ms timeout for effect
-        this._setZoomAndCenter(this.funLocations, 2300);
+        this._setZoomAndCenter(this.funLocations, this.CENTER_TIMEOUT);
+
+        // Closes Friend Finder tab for users to see the results
+        this._closeFriendFinder();
 
       } else {
         // If no results are found, searches again with larger radius
         this._reSearch(radius);
       }
     });
+  }
+
+  // Closes Friend Finder tab
+  _closeFriendFinder() {
+    const friendFinder = document.querySelector('.locations');
+    friendFinder.classList.remove('open');
   }
 
   // Dispaly location info window

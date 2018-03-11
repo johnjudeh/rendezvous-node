@@ -1,30 +1,27 @@
-img, embed, object, video {
-  max-width: 100%;
-}
+/* General */
 
-body, .ui.menu, .ui.button, h1 {
-  font-family: 'Roboto';
-  font-weight: 400;
+body {
   background: rgb(251, 255, 254);
 }
 
-body {
-  height: 100%;
-  overflow: hidden;
+body,
+.ui.menu,
+.ui.button {
+  font-family: 'Roboto';
+  font-weight: 400;
 }
 
-.ui.menu {
-  border-radius: 0px;
+/* Nav */
+
+.ui.menu.nav {
+  height: 57px;
+  margin-bottom: 0;
+  border-radius: 0;
 }
 
-.container.main {
-  margin-top:3.8%;
-  height: 100%;
-}
-
-i.icon.logo {
+.icon.logo {
   font-size: 1.5em;
-  margin: 0em 0.32em;
+  margin: 0 .32em;
 }
 
 .logo__text {
@@ -33,20 +30,12 @@ i.icon.logo {
   font-weight: 400;
 }
 
-.highlight {
+.menu__user {
   color: #4FB2AC;
   margin-left: 5px;
 }
 
-.grid {
-  height: 83.5%;
-}
-
-.container.map {
-  width: 100%;
-  height: 100%;
-  /* float: left; */
-}
+/* Map */
 
 #map {
   height: 100%;
@@ -54,75 +43,59 @@ i.icon.logo {
   border-radius: 4px;
 }
 
+/* Locations */
+
+.hidden {
+  display: none !important;
+}
+
+/* Locations Header */
+
 .ui.divider {
   font-size: 1.2em;
 }
 
-.locatorParent {
-  height: 85%;
-}
-
-div.ui.locator {
-  width: 80%;
-  margin: 5% 10%;
-}
-
-.ui.buttons button.geo {
-  width: 62%;
-  border-top-right-radius: 0rem;
-  border-bottom-right-radius: 0rem;
-  margin-right: 0.2rem;
-}
-
-button.search {
-  width: 38%;
-}
+/* Locations Buttons */
 
 #autocomplete {
   text-align: center;
   border-color: #4FB2AC;
 }
 
-.ui.icon.input > i.icon.pointer {
+.ui.icon.input i.icon.pointer {
   cursor: pointer;
   pointer-events: all;
 }
 
-.ui.input i.disabled.icon {
-  cursor: text;
-}
-
-.ui.hidden {
-  display: none;
-}
-
-.friendHolder {
-  height: 4.3em;
-}
-
-.ui.card .avatar img, .ui.card img.avatar, .ui.cards>.card .avatar img, .ui.cards>.card img.avatar {
+.ui.card .avatar.image {
   height: 2.5em;
   width: 2.5em;
-  /* margin-right: 5px; */
 }
 
-.ui.addressDiv {
-  float: right;
-  width: 78%;
+/* Locations Friend Holder */
+
+.content {
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.address {
-  display: inline-flex;
-  vertical-align: middle;
+.ui.address-div {
+  width: calc(100% - 4.75em);
 }
 
-.funFinder {
+/* Locations Fun-finder Button */
+
+.ui.button.fun-finder-sec__fun-btn {
   width: 100%;
+  background-color: #EFCB68;
 }
 
-.funPlaceIcon {
-  height: 3em;
+.ui.button.fun-finder-sec__fun-btn:focus,
+.ui.button.fun-finder-sec__fun-btn:hover {
+  background-color: #F6D782;
 }
+
+/* Toast Popup */
 
 .ui.black.message {
   z-index: 1;
@@ -141,7 +114,7 @@ button.search {
   margin-left: 2px;
 }
 
-.ui.message > .toastButton {
+.ui.message .toastButton {
   background: none;
   border: none;
   color: #FF5252;
@@ -151,14 +124,469 @@ button.search {
   margin: auto 1px;
 }
 
-.ui.shrink {
-  width: 2%;
-  flex: none !important;
-  min-width: 0%;
-  transition-property: all;
-  transition-duration: 1s;
-  transition-timing-function: ease;
+/* Responsive Design Code */
+
+@media screen and (max-width: 368px) {
+
+  /* Nav */
+
+  .menu__user--lg {
+    display: none;
+  }
+
+  .logo__text {
+    font-size: 1.4em;
+  }
+
+  .ui.menu .item.menu__login-icon,
+  .ui.menu .item.menu__register-icon,
+  .ui.menu .item.menu__logout-icon {
+    font-size: 1.2em;
+  }
+
+  /* Locations */
+
+  /* Locations Buttons */
+
+  .ui.buttons.locator {
+    width: 54px;
+  }
+
+  #locator .locateButton,
+  .ui.buttons .ui.search {
+    border-radius: 54px;
+    width: 54px;
+    height: 54px;
+    padding: 0;
+  }
+
+  .locations #locator .ui.locateButton.shrink {
+    width: 14px;
+    height: 14px;
+    padding: 0;
+    margin: -38px auto auto auto;
+    transition: all 0.7s ease;
+  }
+
 }
+
+@media screen and (min-width: 369px) and (max-width: 767px) {
+
+  /* Nav */
+
+  .ui.menu .item.menu__login-icon,
+  .ui.menu .item.menu__register-icon,
+  .ui.menu .item.menu__logout-icon {
+    font-size: 1.4em;
+  }
+
+  /* Locations */
+
+  /* Locations Buttons */
+
+  .ui.buttons.locator {
+    width: 58px;
+  }
+
+  #locator .locateButton,
+  .ui.buttons .ui.search {
+    border-radius: 58px;
+    width: 58px;
+    height: 58px;
+    margin-top: 10px;
+    margin-bottom: 3px;
+  }
+
+  .locations #locator .ui.locateButton.shrink {
+    width: 14px;
+    height: 14px;
+    padding: 0;
+    margin: -33px auto auto auto;
+    transition: all 0.7s ease;
+  }
+
+}
+
+@media screen and (min-width: 369px) {
+
+  /* Nav */
+
+  .menu__user--sm {
+    display: none;
+  }
+
+}
+
+@media screen and (max-width: 767px) {
+
+  /* General */
+
+  .ui.menu .item.menu__login,
+  .ui.menu .item.menu__register,
+  .ui.menu .item.menu__logout,
+  .menu__signed-in-as,
+  .ui.horizontal.divider,
+  .locateButton__text,
+  .search__text,
+  .ui.or,
+  .icon.angle.left,
+  .address,
+  .fun-finder__text {
+    display: none;
+  }
+
+  /* Locations */
+
+  .locations {
+    width: 100%;
+  }
+
+  /* Locations Buttons */
+
+  .ui.buttons.locator {
+    position: absolute;
+    right: 0;
+    top: 18.5%;
+    height: 130px;
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: 10px;
+    margin-top: 0;
+    z-index: 1;
+  }
+
+  .locations .ui.locateButton {
+    order: 1;
+  }
+
+  #locator .ui.button.search i.search.icon,
+  #locator .ui.button.locateButton i.marker.icon  {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* Locations Search Bar */
+
+  #search {
+    width: 100%;
+    height: 57px;
+    margin: 0;
+    position: absolute;
+    top: 57px;
+    border-radius: 0;
+  }
+
+  #autocomplete {
+    background-color: rgba(251, 255, 254, 0.8);
+    border-radius: 0;
+    font-size: 16px;
+    border-color: #1b1c1d;
+    border-bottom-width: 5px;
+  }
+
+  #reloadMap {
+    font-size: 1.3em;
+  }
+
+  /* Locations Friend Holder */
+
+  .locator-parent {
+    position: absolute;
+    top: 113px;
+    width: 70%;
+    height: 76px;
+    padding-left: 10px;
+    padding-top: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .locator-parent::-webkit-scrollbar {
+    height: 7px;
+  }
+
+  .ui.card.locator.friend-holder {
+    width: 54px;
+    height: 54px;
+    border-radius: 500rem;
+    margin: 0;
+    margin-right: 5px;
+    display: inline-block;
+  }
+
+  .ui.card .content {
+    padding: 0;
+  }
+
+  .ui.card .ui.avatar.image {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Locations Fun Finder */
+
+  .fun-finder-sec {
+    position: absolute;
+    top: 113px;
+    right: 0;
+    width: 90px;
+    height: 76px;
+    padding: 10px 10px 0 0;
+  }
+
+    #fun-finder-div .fun-finder-sec__fun-btn {
+    border-radius: 500rem;
+    height: 54px;
+    padding: 0;
+    font-size: 2.2em;
+    color: rgba(0,0,0,.87);
+  }
+
+  #fun-finder-div .fun-finder__icon {
+    margin: 0;
+  }
+
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+
+  /* Locations */
+
+  .locations {
+    position: absolute;
+    right: 0;
+    top: 93px;
+    background-color: rgba(251, 255, 254, 0.7);
+    width: 292px;
+    height: 74%;
+    border-radius: 10px 0 0 10px;
+    transform: translate(265px, 0);
+    transition: transform 0.7s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2),
+                0 -1px 0px rgba(0,0,0,0.02);
+  }
+
+  .icon.angle.left {
+    position: absolute;
+    top: calc(50% - .7em);
+    left: 2px;
+    font-size: 3em;
+    width: 25px;
+  }
+
+  .open {
+    transform: translate(0, 0);
+  }
+
+  /* Locations Header */
+
+  .ui.horizontal.divider {
+    margin-top: 29px;
+  }
+
+  /* Locations Buttons */
+
+  .ui.input,
+  .ui.buttons {
+    width: 230px;
+    height: 42px;
+    margin: 12px calc((100% - 230px)/2);
+  }
+
+  .ui.buttons .or {
+    margin-top: 2px;
+  }
+
+  /* Locations Friend Holder Container */
+
+  .locator-parent {
+    height: calc(100% - 221px);
+    margin: 10px;
+    padding: 5px;
+    overflow-y: auto;
+  }
+
+  .locator-parent::-webkit-scrollbar {
+    width: 7px;
+  }
+
+  /* Locations Friend Holder */
+
+  .friend-holder.card {
+    width: 230px;
+    margin: 12px calc((100% - 230px)/2);
+  }
+
+  /* Locations Fun Finder Button */
+
+  .fun-finder-sec {
+    width: 230px;
+    height: 42px;
+    margin: 22px calc((100% - 230px)/2);
+  }
+
+  .fun-finder-sec__fun-btn {
+    height: 42px;
+  }
+
+}
+
+@media screen and (max-width: 991px) {
+
+  /* General */
+
+  .main {
+    width: 100%;
+    height: calc(100% - 57px);
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  /* Map */
+
+  .map {
+    width: 100%;
+    height: 100%;
+  }
+
+}
+
+@media screen and (min-width: 768px) {
+
+  /* General */
+
+  .ui.menu .item.menu__register-icon,
+  .ui.menu .item.menu__login-icon,
+  .ui.menu .item.menu__logout-icon,
+  .search.icon {
+    display: none;
+  }
+
+  /* Locations */
+
+  /* Locations Buttons */
+
+  .ui.buttons .geo {
+    width: 62%;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-right: .2rem;
+  }
+
+  .search {
+    width: 38%;
+  }
+
+  .ui.shrink {
+    width: 2%;
+    flex: none !important;
+    width: 0%;
+    transition: width 1s ease;
+  }
+
+
+}
+
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+
+  /* General */
+
+  .main {
+    width: 933px;
+  }
+
+}
+
+@media screen and (min-width: 992px) {
+
+  /* General */
+
+  .icon.angle.left {
+    display: none;
+  }
+
+  .main {
+    box-sizing: border-box;
+    height: calc(100% - 147px);
+    margin: 45px auto;
+    display: flex;
+    flex-flow: wrap;
+  }
+
+  /* Map */
+
+  .map {
+    height: 100%;
+    width: calc(100% - 328px);
+  }
+
+  /* Locations */
+
+  .locations {
+    height: 100%;
+    width: 300px;
+    margin-left: 28px;
+  }
+
+  /* Locations Buttons */
+
+  .ui.input,
+  .ui.buttons {
+    height: 42px;
+    width: 80%;
+    margin: 5% 10%;
+  }
+
+  .ui.buttons .or {
+    margin-top: 2px;
+  }
+
+  /* Locations Friend Holder Container */
+
+  .locator-parent {
+    height: calc(100% - 211px);
+    padding: 10px 0;
+    overflow-y: auto;
+  }
+
+  .locator-parent::-webkit-scrollbar {
+    width: 7px;
+  }
+
+  /* Locations Friend Holder */
+
+  .friend-holder.card {
+    width: 80%;
+    margin: 5% 10%;
+  }
+
+  /* Locations Fun Finder Button */
+
+  .fun-finder-sec {
+    height: 42px;
+    width: 80%;
+    margin: 5% 10%;
+  }
+
+  .fun-finder-sec__fun-btn {
+    height: 42px;
+  }
+
+}
+
+@media screen and (min-width: 1200px) {
+
+  /* General */
+
+  .main {
+    width: 1127px;
+  }
+
+}
+
+/* REGISTER & LOGIN PAGES -- COME BACK TO ME */
 
 div.ui.formDiv {
   width: 47%;
@@ -170,10 +598,6 @@ div.ui.loginFormDiv {
 
 .ui.form .ui.error.message {
   margin: -4% auto 2.5% auto;
-}
-
-.ui.horizontal.divider {
-  margin-top: 7%;
 }
 
 .ui.horizontal.divider.interests {
@@ -191,7 +615,7 @@ div.ui.loginFormDiv {
 
 .ui.button.formButton {
   width: 150px;
-  margin: 0px 4px;
+  margin: 0 4px;
 }
 
 .column.interests {

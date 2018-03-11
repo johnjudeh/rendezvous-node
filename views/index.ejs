@@ -1,49 +1,66 @@
 <% include ./partials/header %>
 
-<div class='ui container main'>
+<main class='main'>
+  <section class='map'>
+    <div id='map' class='map__container'></div>
+  </section>
 
-  <div class='ui grid contianer'>
+  <section class='locations'>
+      <%# <i class="bars icon"></i> %>
+      <i class="angle left icon"></i>
 
-    <div class='eleven wide column map'>
-      <div id='map'></div>
-    </div>
+      <header class='ui horizontal divider'>
+        Friend Finder
+      </header>
 
-    <div class='five wide column'>
+      <article class='ui buttons locator' id='locator'>
+        <button class='ui teal button geo locateButton'>
+          <i class='marker icon'></i><span class='locateButton__text'>Locate Me</span>
+        </button>
 
-      <div class='row locatorParent'>
-        <div class='ui horizontal divider'>
-          Friend Finder
-        </div>
-        <div class='ui buttons locator' id='locator'>
-          <button class='ui teal button geo locateButton'>
-            <i class='marker icon'></i>Locate Me
-          </button>
-          <div class='ui or'></div>
-          <button class='ui grey button search'>Search</button>
-        </div>
-        <div class='ui input icon focus locator hidden' id='search'>
-          <input id='autocomplete' type='text' placeholder='Where are you?'>
-          <i class='repeat disabled icon' id='reloadMap'></i>
-        </div>
-        <div class='ui card locator friendHolder hidden' id='clone'>
+        <div class='ui or'></div>
+
+        <button class='ui grey button search'>
+          <i class="search icon"></i>
+          <span class='search__text'>Search</span>
+        </button>
+      </article>
+
+      <article class='ui input icon focus locator hidden' id='search'>
+        <input id='autocomplete' type='text' placeholder='Where are you?'>
+        <i class='repeat disabled icon' id='reloadMap'></i>
+      </article>
+
+      <section class='locator-parent'>
+        <article class='ui card locator friend-holder hidden' id='clone'>
           <div class='content'>
             <img class='ui avatar image' src='/avatars/male.png'>
-            <div class='ui container addressDiv'>
+            <div class='ui container address-div'>
               <p class='address'></p>
             </div>
           </div>
-        </div>
-      </div>
-      <div class='row'>
-        <div class='ui locator hidden' id='funFinderDiv'>
-          <button class='ui yellow button funFinder'>Find me fun</button>
-        </div>
-      </div>
+        </article>
+      </section>
 
-    </div>
+    <%# <article class='fun-finder-sec'>
+      <div class='fun-finder-sec__fun-btn hidden' id='fun-finder-div'>
+        <button class='ui button fun-finder'>
+          <span class='fun-finder__text'>Find me fun</span>
+          <i class="child icon fun-finder__icon"></i>
+        </button>
+      </div>
+    </article> %>
 
-  </div>
-</div>
+    <article class='fun-finder-sec hidden' id='fun-finder-div'>
+      <button class='ui button fun-finder-sec__fun-btn'>
+        <span class='fun-finder__text'>Find me fun</span>
+        <i class="child icon fun-finder__icon"></i>
+      </button>
+    </article>
+
+    </section>
+  <%# </section> %>
+</main>
 
 <!-- Used for infoWindow displaying  -->
 <div style='display: none'>
