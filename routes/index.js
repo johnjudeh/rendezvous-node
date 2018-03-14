@@ -13,11 +13,6 @@ const funPlaceTypes = [
 
 router.get('/', (req, res) => {
   res.set('Cache-control', 'no-cache');
-  res.render('landing');
-});
-
-router.get('/maps', (req, res) => {
-  res.set('Cache-control', 'no-cache');
   res.render('index');
 });
 

@@ -7,18 +7,15 @@ self.addEventListener('install', event => {
     caches.open(staticCacheName).then(cache => {
       return cache.addAll([
         '/',
-        '/maps',
         '/register',
         '/login',
         '/js/maps.js',
         '/js/register.js',
         '/js/sw/index.js',
         '/css/app.css',
-        '/css/landing.css',
         '/avatars/male.png',
         '/avatars/female.png',
         '/avatars/ninja.png',
-        '/imgs/landing.jpg',
         'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css',
         'https://fonts.googleapis.com/css?family=Oleo+Script+Swash+Caps|Roboto:400,400i,500,700,700i',
         'https://code.jquery.com/jquery-3.2.1.min.js',
