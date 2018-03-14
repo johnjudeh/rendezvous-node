@@ -352,6 +352,12 @@ body,
 
 @media screen and (min-width: 768px) and (max-width: 991px) {
 
+  /* Nav */
+
+  .nav .ui.container {
+    width: 90%;
+  }
+
   /* Locations */
 
   .locations {
