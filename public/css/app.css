@@ -594,12 +594,41 @@ body,
 
 /* REGISTER & LOGIN PAGES -- COME BACK TO ME */
 
-div.ui.formDiv {
-  width: 47%;
+/* Login & Register Page */
+
+/* General */
+
+.main-login {
+  max-width: 90%;
+  margin: 45px auto;
 }
 
-div.ui.loginFormDiv {
-  width: 30%;
+/* Form Buttons */
+
+.buttons-login {
+  width: 300px;
+  max-width: 90%;
+  margin: 45px auto;
+}
+
+.button.form-button {
+  box-sizing: border-box;
+  width: 45%;
+  margin: 0 2%;
+}
+
+/* Login Page */
+
+/* General */
+
+.main-login {
+  width: 300px;
+}
+
+/* Register Page */
+
+.ui.formDiv {
+  width: 47%;
 }
 
 .ui.form .ui.error.message {
@@ -617,11 +646,6 @@ div.ui.loginFormDiv {
 .ui.formButtonDiv {
   margin-top: 7%;
   width: 320px;
-}
-
-.ui.button.formButton {
-  width: 150px;
-  margin: 0 4px;
 }
 
 .column.interests {
