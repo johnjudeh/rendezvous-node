@@ -74,6 +74,9 @@ class MapController {
     this.ERROR_TIMEOUT = 2500;
     this.SPY_SRC = '/avatars/ninja.png';
     this.LONDON_CENTER = {lat: 51.505, lng: -0.123};
+    this.FUN_PLACE_CATEGORIES = [ 'Attractions', 'Out & About', 'Adventure', 'Night Life',
+                                  'Smarts & Arts', 'Wellness'
+                                ];
     this.FUN_PLACE_TYPES = [ 'amusement_park', 'aquarium', 'art_gallery', 'bakery',
                               'bar', 'beauty_salon', 'book_store', 'bowling_alley',
                               'cafe', 'campground', 'car_rental', 'casino', 'gym',
@@ -81,6 +84,32 @@ class MapController {
                               'park', 'restaurant', 'rv_park', 'shopping_mall', 'spa',
                               'stadium', 'zoo'
                             ];
+    this.FUN_PLACE_TYPES_AND_CATEGORIES = [
+      { type: this.FUN_PLACE_TYPES[0], category: this.FUN_PLACE_CATEGORIES[2] },
+      { type: this.FUN_PLACE_TYPES[1], category: this.FUN_PLACE_CATEGORIES[0] },
+      { type: this.FUN_PLACE_TYPES[2], category: this.FUN_PLACE_CATEGORIES[4] },
+      { type: this.FUN_PLACE_TYPES[3], category: this.FUN_PLACE_CATEGORIES[1] },
+      { type: this.FUN_PLACE_TYPES[4], category: this.FUN_PLACE_CATEGORIES[3] },
+      { type: this.FUN_PLACE_TYPES[5], category: this.FUN_PLACE_CATEGORIES[5] },
+      { type: this.FUN_PLACE_TYPES[6], category: this.FUN_PLACE_CATEGORIES[4] },
+      { type: this.FUN_PLACE_TYPES[7], category: this.FUN_PLACE_CATEGORIES[3] },
+      { type: this.FUN_PLACE_TYPES[8], category: this.FUN_PLACE_CATEGORIES[1] },
+      { type: this.FUN_PLACE_TYPES[9], category: this.FUN_PLACE_CATEGORIES[2] },
+      { type: this.FUN_PLACE_TYPES[10], category: this.FUN_PLACE_CATEGORIES[2] },
+      { type: this.FUN_PLACE_TYPES[11], category: this.FUN_PLACE_CATEGORIES[0] },
+      { type: this.FUN_PLACE_TYPES[12], category: this.FUN_PLACE_CATEGORIES[5] },
+      { type: this.FUN_PLACE_TYPES[13], category: this.FUN_PLACE_CATEGORIES[4] },
+      { type: this.FUN_PLACE_TYPES[14], category: this.FUN_PLACE_CATEGORIES[3] },
+      { type: this.FUN_PLACE_TYPES[15], category: this.FUN_PLACE_CATEGORIES[0] },
+      { type: this.FUN_PLACE_TYPES[16], category: this.FUN_PLACE_CATEGORIES[3] },
+      { type: this.FUN_PLACE_TYPES[17], category: this.FUN_PLACE_CATEGORIES[0] },
+      { type: this.FUN_PLACE_TYPES[18], category: this.FUN_PLACE_CATEGORIES[1] },
+      { type: this.FUN_PLACE_TYPES[19], category: this.FUN_PLACE_CATEGORIES[2] },
+      { type: this.FUN_PLACE_TYPES[20], category: this.FUN_PLACE_CATEGORIES[1] },
+      { type: this.FUN_PLACE_TYPES[21], category: this.FUN_PLACE_CATEGORIES[5] },
+      { type: this.FUN_PLACE_TYPES[22], category: this.FUN_PLACE_CATEGORIES[0] },
+      { type: this.FUN_PLACE_TYPES[23], category: this.FUN_PLACE_CATEGORIES[0] }
+    ]
     this.MARKER_PATH = 'https://developers.google.com/maps/documentation/javascript/images/marker_green';
     this.CLUSTER_IMAGE = 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m';
     // Methods called at instansiation
@@ -90,7 +119,6 @@ class MapController {
 
   // Pulls logged in user location preferences
   _getUserPreferences() {
-
     const currentScript = document.getElementById('mapScript');
     const currentUserInterests = currentScript.getAttribute('data-user-interests');
 
@@ -109,11 +137,6 @@ class MapController {
       streetViewControl: false,
       fullscreenControl: false,
       backgroundColor: 'rgb(242, 255, 254)'
-    });
-
-    // Sets class infoWindow variable
-    this.infoWindow = new google.maps.InfoWindow({
-      content: document.getElementById('info-content')
     });
 
     // Geocoder turns locations into coordinates
@@ -164,10 +187,12 @@ class MapController {
 
       }, () => {
         // Error handler if location is not found
+        this.infoWindow = new google.maps.InfoWindow();
         this._handleLocationError(true, this.infoWindow, this.map.getCenter());
       });
     } else {
       // Error handler if browser doesn't support Geolocation
+      this.infoWindow = new google.maps.InfoWindow();
       this._handleLocationError(false, this.infoWindow, this.map.getCenter());
     }
   }
@@ -284,7 +309,7 @@ class MapController {
     } else {
       setTimeout(() => {
         this.map.setCenter(bounds.getCenter());
-        this.map.fitBounds(bounds, 33);
+        this.map.fitBounds(bounds, 60);
       }, msTimeOut);
     }
 
@@ -386,11 +411,11 @@ class MapController {
   // Geolocation error handler
   _handleLocationError(browserHasGeolocation, infoWindow, pos) {
     // Shows user error message
-    this.infoWindow.setPosition(pos);
-    this.infoWindow.setContent(browserHasGeolocation ?
+    infoWindow.setPosition(pos);
+    infoWindow.setContent(browserHasGeolocation ?
                           'Error: The Geolocation service failed.' :
                           'Error: Your browser doesn\'t support geolocation.');
-    this.infoWindow.open(this.map);
+    infoWindow.open(this.map);
 
     // Sets up search bar to find locations
     this._searchFunctionality(true);
@@ -399,6 +424,11 @@ class MapController {
   // Searches for fun places based on mid point
   _funSearch(radius) {
     const mapController = this;
+
+    // Resets class infoWindow variable for fun locations
+    this.infoWindow = new google.maps.InfoWindow({
+      content: document.getElementById('info-content')
+    });
 
     // Sets search location
     const search = {

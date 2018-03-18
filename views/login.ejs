@@ -1,6 +1,6 @@
 <% include partials/header %>
 
-<main class='main-login'>
+<main class='main-forms main-forms--login'>
 
   <% if (error && error.length > 0) { %>
     <form class='ui error form' action='/login' method='post'>
@@ -10,29 +10,31 @@
     <form class='ui form' action='/login' method='post'>
   <% } %>
 
-    <section>
-      <div class='ui error message'>
-        <header class='header'>We had some issues</header>
-        <p> <%= error %> </p>
-      </div>
-      <div class='ui success message'>
-        <header class='header'>Hoorah!</header>
-        <p> <%= success %> Please sign in below. </p>
-      </div>
+    <div class='ui error message'>
+      <header class='header'>We had some issues</header>
+      <p> <%= error %> </p>
+    </div>
 
+    <div class='ui success message'>
+      <header class='header'>Hoorah!</header>
+      <p> <%= success %> Please sign in below. </p>
+    </div>
+
+    <section>
       <div class='field'>
         <label>Email</label>
         <input type='text' name='username' placeholder='john.doe@lostmail.com' autocomplete='email'>
       </div>
+      
       <div class='field'>
         <label>Password</label>
         <input type='password' name='password' placeholder='********' autocomplete='current-password'>
       </div>
     </section>
 
-    <section class='buttons-login'>
-      <a class='ui grey button form-button' href='/'>Go Back</a>
-      <button class='ui teal button form-button'>Submit</button>
+    <section class='form-buttons'>
+      <a class='ui grey button form-buttons__button' href='/'>Go Back</a>
+      <button class='ui teal button form-buttons__button'>Submit</button>
     </section>
   </form>
 

@@ -4,12 +4,14 @@
 $('.ui.dropdown').dropdown();
 $('.ui.checkbox').checkbox();
 
-$('a.next.formButton').click(() => {
+$('.form-buttons__button.next').click(() => {
   toggleForms();
+  window.scrollTo(0, 0);
 });
 
-$('a.back.formButton').click(() => {
+$('.form-buttons__button.back').click(() => {
   toggleForms();
+  window.scrollTo(0, 10000);
 });
 
 function toggleForms() {

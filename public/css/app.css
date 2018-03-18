@@ -1,7 +1,11 @@
+/* ========================== MAPS PAGE ========================== */
+
 /* General */
 
 body {
   background: rgb(251, 255, 254);
+  min-height: 100%;
+  height: auto;
 }
 
 body,
@@ -17,6 +21,9 @@ body,
   height: 57px;
   margin-bottom: 0;
   border-radius: 0;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .icon.logo {
@@ -130,10 +137,6 @@ body,
 
   /* Nav */
 
-  .menu__user--lg {
-    display: none;
-  }
-
   .logo__text {
     font-size: 1.4em;
   }
@@ -207,25 +210,16 @@ body,
 
 }
 
-@media screen and (min-width: 369px) {
-
-  /* Nav */
-
-  .menu__user--sm {
-    display: none;
-  }
-
-}
-
 @media screen and (max-width: 767px) {
 
   /* General */
 
+  .menu__user--lg,
   .ui.menu .item.menu__login,
   .ui.menu .item.menu__register,
   .ui.menu .item.menu__logout,
   .menu__signed-in-as,
-  .ui.horizontal.divider,
+  .ui.horizontal.divider.maps,
   .locateButton__text,
   .search__text,
   .ui.or,
@@ -388,7 +382,7 @@ body,
 
   /* Locations Header */
 
-  .ui.horizontal.divider {
+  .ui.horizontal.divider.maps {
     margin-top: 29px;
   }
 
@@ -445,7 +439,7 @@ body,
 
   .main {
     width: 100%;
-    height: calc(100% - 57px);
+    height: calc(100vh - 57px);
     display: flex;
     flex-wrap: wrap;
   }
@@ -463,6 +457,7 @@ body,
 
   /* General */
 
+  .menu__user--sm,
   .ui.menu .item.menu__register-icon,
   .ui.menu .item.menu__login-icon,
   .ui.menu .item.menu__logout-icon,
@@ -492,6 +487,13 @@ body,
     transition: width 1s ease;
   }
 
+  /* ========================== REGISTER PAGE ========================== */
+
+  /* Interests */
+
+  .interests__label {
+    width: calc((100% - 60px) / 3);
+  }
 
 }
 
@@ -515,7 +517,7 @@ body,
 
   .main {
     box-sizing: border-box;
-    height: calc(100% - 147px);
+    height: calc(100vh - 147px);
     margin: 45px auto;
     display: flex;
     flex-flow: wrap;
@@ -594,60 +596,152 @@ body,
 
 /* REGISTER & LOGIN PAGES -- COME BACK TO ME */
 
-/* Login & Register Page */
+/* ===================== LOGIN & REGISTER PAGES ===================== */
 
 /* General */
 
-.main-login {
+.main-forms {
+  height: calc(100% - 147px);
   max-width: 90%;
   margin: 45px auto;
 }
 
+/* Form */
+
+.form.divider {
+  margin: 40px 0 30px;
+}
+
+.ui.message {
+  margin: 0 auto 35px;
+}
+
 /* Form Buttons */
 
-.buttons-login {
+.form-buttons {
   width: 300px;
   max-width: 90%;
   margin: 45px auto;
 }
 
-.button.form-button {
+.button.form-buttons__button {
   box-sizing: border-box;
   width: 45%;
   margin: 0 2%;
 }
 
-/* Login Page */
+/* ========================== LOGIN PAGE ========================== */
 
 /* General */
 
-.main-login {
+.main-forms--login {
   width: 300px;
 }
 
-/* Register Page */
+/* ========================== REGISTER PAGE ========================== */
 
-.ui.formDiv {
-  width: 47%;
+/* General */
+
+.main-forms--register {
+  width: 810px;
 }
 
-.ui.form .ui.error.message {
-  margin: -4% auto 2.5% auto;
+/* Interests */
+
+.interests.ui.horizontal.divider {
+  margin-bottom: 45px;
 }
 
-.ui.horizontal.divider.interests {
-  margin-bottom: 7%;
+.interests {
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.ui.grid.interestsForm {
-  margin-left: 10px;
+/* Interests Labels */
+
+.interests__label {
+  height: 85px;
+  border-radius: 10px;
+  background-clip: content-box;
+  margin: 10px;
+  padding: 4px;
 }
 
-.ui.formButtonDiv {
-  margin-top: 7%;
+.interests__label[data-cat='Attractions'] {
+  background-color: #995d81;
+  /* background-color: #A5CBC3; */
+}
+
+.interests__label[data-cat='Out & About'] {
+  background-color: #F6BD60;
+  /* background-color: #efcb68; */
+}
+
+.interests__label[data-cat='Adventure'] {
+  background-color: #8ed081;
+}
+
+.interests__label[data-cat='Night Life'] {
+  background-color: #e16F7c;
+  /* background-color: #F28482; */
+}
+
+.interests__label[data-cat='Smarts & Arts'] {
+  background-color: #c89b7b;
+}
+
+.interests__label[data-cat='Wellness'] {
+  background-color: #a3bcf9;
+}
+
+.interests__label-content {
+  width: 120px;
+  margin: 19px auto;
+  text-align: center;
+}
+
+.interests__label-type {
+  margin: 0;
+  color: rgb(251, 255, 254);
+}
+
+.interests__label-cat {
+  font-size: 0.9em;
+  color: rgba(251, 255, 254, 0.9);
+}
+
+/* Interests Checkboxes */
+
+.interests__checkbox:checked + .interests__label {
+  border: #41D5CC 3px solid;
+}
+
+.interests__checkbox {
+  -webkit-appearance: none;
+}
+
+/* Form Buttons */
+
+.form-buttons {
   width: 320px;
 }
 
-.column.interests {
-  height: 52.22px;
+@media screen and (max-width: 520px) {
+
+  /* Interests */
+
+  .interests__label {
+    width: calc(100% - 20px);
+  }
+
+}
+
+@media screen and (min-width: 521px) and (max-width: 767px) {
+
+  /* Interests */
+
+  .interests__label {
+    width: calc((100% - 40px) / 2);
+  }
+
 }
