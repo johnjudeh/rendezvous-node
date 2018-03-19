@@ -41,7 +41,7 @@ gulp.task('js:models', () => {
 // Transpiles to ES5, revs static assets and moves files to build
 gulp.task('rev-babel', () => {
   const noSwFilter = filter(['**', '!public/sw.js', '!public/js/sw/*'], { restore: true });
-  const jsFilter = filter('**/*.js', { restore: true });
+  const jsFilter = filter(['**/*.js', '!public/js/manup.min.js'], { restore: true });
 
   return gulp.src(['public/**/*', '!public/js/maps.js', '!public/manifest.json'])
       .pipe(jsFilter)
