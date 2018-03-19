@@ -1,0 +1,25 @@
+{
+  "name": "Rendez Vous",
+  "short_name": "Rendez Vous",
+  "start_url": "/",
+  "description": "Rendez Vous connects friends in big cities, finding the fun and fairly-located places to spend time. Hang out spots are chosen based on the group's shared interests.",
+  "display": "standalone",
+  "scope": "/",
+  "background_color": "#fbfffe",
+  "theme_color": "#1b1c1d",
+  "lang": "en-GB",
+  "dir": "ltr",
+  "icons": [{
+    "src": "/icon/rendez-vous-icon-256x256-db86a40fb3.png",
+    "type": "image/png",
+    "sizes": "256x256"
+  }, {
+    "src": "/icon/rendez-vous-icon-128x128-8b2d980ea4.png",
+    "type": "image/png",
+    "sizes": "128x128"
+  }, {
+    "src": "/icon/rendez-vous-icon-96x96-eb7881c208.png",
+    "type": "image/png",
+    "sizes": "96x96"
+  }]
+}

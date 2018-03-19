@@ -43,7 +43,7 @@ gulp.task('rev-babel', () => {
   const noSwFilter = filter(['**', '!public/sw.js', '!public/js/sw/*'], { restore: true });
   const jsFilter = filter('**/*.js', { restore: true });
 
-  return gulp.src(['public/**/*', '!public/js/maps.js'])
+  return gulp.src(['public/**/*', '!public/js/maps.js', '!public/manifest.json'])
       .pipe(jsFilter)
       .pipe(babel({
         presets: ['es2015']
@@ -82,6 +82,26 @@ gulp.task('maps:rev-babel', () => {
       .pipe(gulp.dest('build/public'));
 });
 
+// Deals seperately with manifest.json as it contains
+// paths that need to be rev-replaced
+gulp.task('manifest:rev-babel', () => {
+  const manifest = gulp.src('build/public/rev-manifest.json');
+
+  return gulp.src('public/manifest.json', {base: 'public'})
+      .pipe(revReplace({
+        manifest: manifest,
+        replaceInExtensions: ['.json']
+      }))
+      .pipe(rev())
+      .pipe(gulp.dest('build/public'))
+      .pipe(rev.manifest('build/public/rev-manifest.json', {
+        base: 'build/public',
+        merge: true
+      }))
+      .pipe(gulp.dest('build/public'));
+});
+
+
 // Moves views to build and replaces revved file references
 gulp.task('views:rev-replace', () => {
   const manifest = gulp.src('build/public/rev-manifest.json');
@@ -89,7 +109,7 @@ gulp.task('views:rev-replace', () => {
   return gulp.src('views/**/*')
       .pipe(revReplace({
         manifest: manifest,
-        replaceInExtensions: ['.ejs', '.js']
+        replaceInExtensions: ['.ejs']
       }))
       .pipe(gulp.dest('build/views'));
 });
@@ -123,7 +143,7 @@ gulp.task('watch', () => {
 gulp.task('default',
     gulp.series('clean',
         gulp.parallel('rev-babel', 'js:server', 'js:routes', 'js:models'),
-        'maps:rev-babel',
+        gulp.parallel('maps:rev-babel', 'manifest:rev-babel'),
         gulp.parallel('views:rev-replace', 'sw:rev-replace'),
         'server'
     )

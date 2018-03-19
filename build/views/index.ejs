@@ -1,49 +1,55 @@
 <% include ./partials/header %>
 
-<div class='ui container main'>
+<main class='main'>
+  <section class='map'>
+    <div id='map' class='map__container'></div>
+  </section>
 
-  <div class='ui grid contianer'>
+  <section class='locations'>
+      <i class="angle left icon"></i>
 
-    <div class='eleven wide column map'>
-      <div id='map'></div>
-    </div>
+      <header class='ui horizontal divider maps'>
+        Friend Finder
+      </header>
 
-    <div class='five wide column'>
+      <article class='ui buttons locator' id='locator'>
+        <button class='ui teal button geo locateButton'>
+          <i class='marker icon'></i><span class='locateButton__text'>Locate Me</span>
+        </button>
 
-      <div class='row locatorParent'>
-        <div class='ui horizontal divider'>
-          Friend Finder
-        </div>
-        <div class='ui buttons locator' id='locator'>
-          <button class='ui teal button geo locateButton'>
-            <i class='marker icon'></i>Locate Me
-          </button>
-          <div class='ui or'></div>
-          <button class='ui grey button search'>Search</button>
-        </div>
-        <div class='ui input icon focus locator hidden' id='search'>
-          <input id='autocomplete' type='text' placeholder='Where are you?'>
-          <i class='repeat disabled icon' id='reloadMap'></i>
-        </div>
-        <div class='ui card locator friendHolder hidden' id='clone'>
+        <div class='ui or'></div>
+
+        <button class='ui grey button search'>
+          <i class="search icon"></i>
+          <span class='search__text'>Search</span>
+        </button>
+      </article>
+
+      <article class='ui input icon focus locator hidden' id='search'>
+        <input id='autocomplete' type='text' placeholder='Where are you?'>
+        <i class='repeat disabled icon' id='reloadMap'></i>
+      </article>
+
+      <section class='locator-parent'>
+        <article class='ui card locator friend-holder hidden' id='clone'>
           <div class='content'>
-            <img class='ui avatar image' src='/avatars/male-b0728b3f24.png'>
-            <div class='ui container addressDiv'>
+            <img class='ui avatar image' src='/avatars/female-2a59da33c7.png'>
+            <div class='ui container address-div'>
               <p class='address'></p>
             </div>
           </div>
-        </div>
-      </div>
-      <div class='row'>
-        <div class='ui locator hidden' id='funFinderDiv'>
-          <button class='ui yellow button funFinder'>Find me fun</button>
-        </div>
-      </div>
+        </article>
+      </section>
 
-    </div>
+      <article class='fun-finder-sec hidden' id='fun-finder-div'>
+        <button class='ui button fun-finder-sec__fun-btn'>
+          <span class='fun-finder__text'>Find me fun</span>
+          <i class="child icon fun-finder__icon"></i>
+        </button>
+      </article>
 
-  </div>
-</div>
+    </section>
+</main>
 
 <!-- Used for infoWindow displaying  -->
 <div style='display: none'>
@@ -76,9 +82,9 @@
 <% include ./partials/toasts %>
 
 <% if(currentUser) { %>
-  <script type='text/javascript' src='/js/maps-2da2ef9aa5.js' data-user-interests='<%= JSON.stringify(Object.keys(currentUser.interests)) %>' id='mapScript'></script>
+  <script type='text/javascript' src='/js/maps-a60d4b6ba6.js' data-user-interests='<%= JSON.stringify(Object.keys(currentUser.interests)) %>' id='mapScript'></script>
 <% } else { %>
-  <script type='text/javascript' src='/js/maps-2da2ef9aa5.js' data-user-interests='' id='mapScript'></script>
+  <script type='text/javascript' src='/js/maps-a60d4b6ba6.js' data-user-interests='' id='mapScript'></script>
 <% } %>
 
 <script src='https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js'></script>

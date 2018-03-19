@@ -6,7 +6,7 @@ var cacheWhiteList = [staticCacheName];
 // Event fires when service worker is first discovered
 self.addEventListener('install', function (event) {
   event.waitUntil(caches.open(staticCacheName).then(function (cache) {
-    return cache.addAll(['/', '/maps', '/register', '/login', '/js/maps-2da2ef9aa5.js', '/js/register-046844ae79.js', '/js/sw/index.js', '/css/app-53784cb522.css', '/css/landing-6c9013db50.css', '/avatars/male-b0728b3f24.png', '/avatars/female-2a59da33c7.png', '/avatars/ninja-6879220b2d.png', '/imgs/landing-c995ae9de9.jpg', 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css', 'https://fonts.googleapis.com/css?family=Oleo+Script+Swash+Caps|Roboto:400,400i,500,700,700i', 'https://code.jquery.com/jquery-3.2.1.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.js']);
+    return cache.addAll(['/', '/register', '/login', '/manifest-d208725c35.json', '/js/maps-a60d4b6ba6.js', '/js/register-fc2b63599b.js', '/js/sw/index.js', '/css/app-8980f3c53d.css', '/icon/rendez-vous-icon-96x96-eb7881c208.png', '/icon/rendez-vous-icon-128x128-8b2d980ea4.png', '/icon/rendez-vous-icon-256x256-db86a40fb3.png', '/avatars/male-b0728b3f24.png', '/avatars/female-2a59da33c7.png', '/avatars/ninja-6879220b2d.png', 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css', 'https://fonts.googleapis.com/css?family=Oleo+Script+Swash+Caps|Roboto:400,400i,500,700,700i', 'https://code.jquery.com/jquery-3.2.1.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.js']);
   }));
 });
 
