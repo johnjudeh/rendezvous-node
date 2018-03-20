@@ -15,6 +15,10 @@ body,
   font-weight: 400;
 }
 
+a {
+  cursor: pointer;
+}
+
 /* Nav */
 
 .ui.menu.nav {

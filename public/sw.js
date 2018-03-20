@@ -14,6 +14,7 @@ self.addEventListener('install', event => {
         '/js/register.js',
         '/js/sw/index.js',
         '/js/manup.min.js',
+        '/js/pwa-nav.js',
         '/css/app.css',
         '/icon/rendez-vous-icon-96x96.png',
         '/icon/rendez-vous-icon-128x128.png',

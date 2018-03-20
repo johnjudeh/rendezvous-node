@@ -2,13 +2,14 @@
   "avatars/female.png": "avatars/female-2a59da33c7.png",
   "avatars/male.png": "avatars/male-b0728b3f24.png",
   "avatars/ninja.png": "avatars/ninja-6879220b2d.png",
-  "css/app.css": "css/app-8980f3c53d.css",
+  "css/app.css": "css/app-98974ab5c8.css",
   "icon/rendez-vous-icon-128x128.png": "icon/rendez-vous-icon-128x128-8b2d980ea4.png",
   "icon/rendez-vous-icon-256x256.png": "icon/rendez-vous-icon-256x256-db86a40fb3.png",
   "icon/rendez-vous-icon-96x96.png": "icon/rendez-vous-icon-96x96-eb7881c208.png",
   "imgs/favicon.png": "imgs/favicon-8e3b50fe0e.png",
   "js/manup.min.js": "js/manup-b222bb634c.min.js",
   "js/maps.js": "js/maps-a60d4b6ba6.js",
+  "js/pwa-nav.js": "js/pwa-nav-e635af56ff.js",
   "js/register.js": "js/register-fc2b63599b.js",
   "manifest.json": "manifest-d208725c35.json"
 }

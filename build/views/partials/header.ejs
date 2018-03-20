@@ -10,7 +10,7 @@
     <link rel='shortcut icon' href='imgs/favicon-8e3b50fe0e.png' type='image/x-icon'>
     <link rel='manifest' href='/manifest-d208725c35.json'>
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css'>
-    <link rel='stylesheet' href='/css/app-8980f3c53d.css'>
+    <link rel='stylesheet' href='/css/app-98974ab5c8.css'>
     <link href='https://fonts.googleapis.com/css?family=Oleo+Script+Swash+Caps|Roboto' rel='stylesheet'>
     <script
       src='https://code.jquery.com/jquery-3.2.1.min.js'
@@ -22,25 +22,25 @@
     <nav class='ui inverted menu nav'>
       <div class='ui container'>
         <header class='header item'>
-            <a href='/'><i class='cube icon logo'></i></a>
+            <a data-href='/'><i class='cube icon logo'></i></a>
             <p class='logo__text'>Rendez Vous</p>
         </header>
         <% if (!currentUser) { %>
           <div class='right menu'>
-            <a class='item menu__register' href='/register'>Sign Up</a>
-            <a class='item menu__login' href='/login'>Login</a>
-            <a class='item menu__register-icon' href='/register'><i class='add user icon'></i></a>
-            <a class='item menu__login-icon' href='/login'><i class='sign in icon'></i></a>
+            <a class='item menu__register' data-href='/register'>Sign Up</a>
+            <a class='item menu__login' data-href='/login'>Login</a>
+            <a class='item menu__register-icon' data-href='/register'><i class='add user icon'></i></a>
+            <a class='item menu__login-icon' data-href='/login'><i class='sign in icon'></i></a>
           </div>
         <% } else { %>
           <div class='right menu'>
-            <a class='item' href='#'>
+            <a class='item'>
               <span class='menu__signed-in-as'>Signed in as: </span>
               <span class='menu__user menu__user--lg'><%= currentUser.firstName %> <%= currentUser.lastName %></span>
               <span class='menu__user menu__user--sm'><%= currentUser.firstName %></span>
             </a>
-            <a class='item menu__logout' href='/logout'>Logout</a>
-            <a class='item menu__logout-icon' href='/logout'><i class='sign out icon'></i></i></a>
+            <a class='item menu__logout' data-href='/logout'>Logout</a>
+            <a class='item menu__logout-icon' data-href='/logout'><i class='sign out icon'></i></i></a>
           </div>
         <% } %>
       </div>
