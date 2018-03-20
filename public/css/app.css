@@ -722,6 +722,7 @@ a {
 
 .interests__checkbox {
   -webkit-appearance: none;
+  display: none;
 }
 
 /* Form Buttons */
