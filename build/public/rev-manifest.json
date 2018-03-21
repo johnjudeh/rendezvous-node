@@ -16,5 +16,6 @@
   "js/manup.min.js": "js/manup-b222bb634c.min.js",
   "js/maps.js": "js/maps-a60d4b6ba6.js",
   "js/pwa-nav.js": "js/pwa-nav-5ba8b79b18.js",
-  "js/register.js": "js/register-fc2b63599b.js"
+  "js/register.js": "js/register-fc2b63599b.js",
+  "manifest.json": "manifest-fe8de624f4.json"
 }
