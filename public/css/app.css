@@ -2,10 +2,15 @@
 
 /* General */
 
+html {
+  height: 100%;
+}
+
 body {
   background: rgb(251, 255, 254);
   min-height: 100%;
-  height: auto;
+  height: unset;
+  /* height: auto; */
 }
 
 body,
