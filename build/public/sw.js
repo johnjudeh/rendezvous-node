@@ -6,7 +6,7 @@ var cacheWhiteList = [staticCacheName];
 // Event fires when service worker is first discovered
 self.addEventListener('install', function (event) {
   event.waitUntil(caches.open(staticCacheName).then(function (cache) {
-    return cache.addAll(['/', '/register', '/login', '/manifest-fe8de624f4.json', '/js/maps-a60d4b6ba6.js', '/js/register-fc2b63599b.js', '/js/sw/index.js', '/js/manup-b222bb634c.min.js', '/js/pwa-nav-5ba8b79b18.js', '/css/app-70a4ad477f.css', '/avatars/male-b0728b3f24.png', '/avatars/female-2a59da33c7.png', '/avatars/ninja-6879220b2d.png', 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css', 'https://fonts.googleapis.com/css?family=Oleo+Script+Swash+Caps|Roboto:400,400i,500,700,700i', 'https://code.jquery.com/jquery-3.2.1.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.js']);
+    return cache.addAll(['/', '/register', '/login', '/manifest-fe8de624f4.json', '/js/maps-a60d4b6ba6.js', '/js/register-fc2b63599b.js', '/js/sw/index.js', '/js/manup-b222bb634c.min.js', '/js/pwa-nav-779d54a7ce.js', '/css/app-c3178f4bce.css', '/avatars/male-b0728b3f24.png', '/avatars/female-2a59da33c7.png', '/avatars/ninja-6879220b2d.png', 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css', 'https://fonts.googleapis.com/css?family=Oleo+Script+Swash+Caps|Roboto:400,400i,500,700,700i', 'https://code.jquery.com/jquery-3.2.1.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.js']);
   }));
 });
 

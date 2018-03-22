@@ -10,7 +10,10 @@ body {
   background: rgb(251, 255, 254);
   min-height: 100%;
   height: unset;
-  /* height: auto; */
+}
+
+.fullscreen-body {
+  height: 100%;
 }
 
 body,
@@ -116,12 +119,11 @@ a {
 
 .ui.black.message {
   z-index: 1;
-  bottom: 23%;
-  margin-left: 35%;
-  margin-right: 35%;
-  width: 30%;
+  bottom: 80px;
+  margin: 0 auto;
+  width: 400px;
+  max-width: 90%;
   display: flex;
-  min-width: min-content;
   background-color: #323232;
   color: rgb(251, 255, 254);
 }
@@ -449,7 +451,7 @@ a {
 
   .main {
     width: 100%;
-    height: calc(100vh - 57px);
+    height: calc(100% - 57px);
     display: flex;
     flex-wrap: wrap;
   }
@@ -527,7 +529,7 @@ a {
 
   .main {
     box-sizing: border-box;
-    height: calc(100vh - 147px);
+    height: calc(100% - 147px);
     margin: 45px auto;
     display: flex;
     flex-flow: wrap;
