@@ -742,7 +742,7 @@ a {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  /* display: none; */
+  display: none;
 }
 
 /* Form Buttons */
