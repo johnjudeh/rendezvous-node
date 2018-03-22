@@ -96,6 +96,7 @@ a {
 
 .content {
   display: flex;
+  display: -webkit-flex;
   flex-wrap: wrap;
 }
 
@@ -124,6 +125,7 @@ a {
   width: 400px;
   max-width: 90%;
   display: flex;
+  display: -webkit-flex;
   background-color: #323232;
   color: rgb(251, 255, 254);
 }
@@ -255,6 +257,7 @@ a {
     top: 18.5%;
     height: 130px;
     display: flex;
+    display: -webkit-flex;
     flex-wrap: wrap;
     margin-right: 10px;
     margin-top: 0;
@@ -374,8 +377,10 @@ a {
     width: 292px;
     height: 74%;
     border-radius: 10px 0 0 10px;
-    transform: translate(265px, 0);
-    transition: transform 0.7s ease;
+    -webkit-transform: translate(265px, 0);
+       -moz-transform: translate(265px, 0);
+            transform: translate(265px, 0);
+    transition: all 0.7s ease;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2),
                 0 -1px 0px rgba(0,0,0,0.02);
   }
@@ -389,7 +394,9 @@ a {
   }
 
   .open {
-    transform: translate(0, 0);
+    -webkit-transform: translate(0, 0);
+       -moz-transform: translate(0, 0);
+            transform: translate(0, 0);
   }
 
   /* Locations Header */
@@ -453,6 +460,7 @@ a {
     width: 100%;
     height: calc(100% - 57px);
     display: flex;
+    display: -webkit-flex;
     flex-wrap: wrap;
   }
 
@@ -532,6 +540,7 @@ a {
     height: calc(100% - 147px);
     margin: 45px auto;
     display: flex;
+    display: -webkit-flex;
     flex-flow: wrap;
   }
 
@@ -666,6 +675,7 @@ a {
 
 .interests {
   display: flex;
+  display: -webkit-flex;
   flex-wrap: wrap;
 }
 
@@ -730,7 +740,9 @@ a {
 
 .interests__checkbox {
   -webkit-appearance: none;
-  display: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* display: none; */
 }
 
 /* Form Buttons */
