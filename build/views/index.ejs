@@ -1,0 +1,96 @@
+<% include ./partials/header-fullscreen %>
+<% include ./partials/nav %>
+
+<main class='main'>
+  <section class='map'>
+    <div id='map' class='map__container'></div>
+  </section>
+
+  <section class='locations'>
+      <i class="angle left icon"></i>
+
+      <header class='ui horizontal divider maps'>
+        Friend Finder
+      </header>
+
+      <article class='ui buttons locator' id='locator'>
+        <button class='ui teal button geo locateButton'>
+          <i class='marker icon'></i><span class='locateButton__text'>Locate Me</span>
+        </button>
+
+        <div class='ui or'></div>
+
+        <button class='ui grey button search'>
+          <i class="search icon"></i>
+          <span class='search__text'>Search</span>
+        </button>
+      </article>
+
+      <article class='ui input icon focus locator hidden' id='search'>
+        <input id='autocomplete' type='text' placeholder='Where are you?'>
+        <i class='repeat disabled icon' id='reloadMap'></i>
+      </article>
+
+      <section class='locator-parent'>
+        <article class='ui card locator friend-holder hidden' id='clone'>
+          <div class='content'>
+            <img class='ui avatar image' src='/avatars/female-2a59da33c7.png'>
+            <div class='ui container address-div'>
+              <p class='address'></p>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <article class='fun-finder-sec hidden' id='fun-finder-div'>
+        <button class='ui button fun-finder-sec__fun-btn'>
+          <span class='fun-finder__text'>Find me fun</span>
+          <i class="child icon fun-finder__icon"></i>
+        </button>
+      </article>
+
+    </section>
+</main>
+
+<!-- Used for infoWindow displaying  -->
+<div style='display: none'>
+  <div id='info-content'>
+    <table>
+      <tr id='iw-url-row' class='iw_table_row'>
+        <td id='iw-icon' class='iw_table_icon'></td>
+        <td id='iw-url'></td>
+      </tr>
+      <tr id='iw-address-row' class='iw_table_row'>
+        <td class='iw_attribute_name'>Address:</td>
+        <td id='iw-address'></td>
+      </tr>
+      <tr id='iw-phone-row' class='iw_table_row'>
+        <td class='iw_attribute_name'>Telephone:</td>
+        <td id='iw-phone'></td>
+      </tr>
+      <tr id='iw-rating-row' class='iw_table_row'>
+        <td class='iw_attribute_name'>Rating:</td>
+        <td id='iw-rating'></td>
+      </tr>
+      <tr id='iw-website-row' class='iw_table_row'>
+        <td class='iw_attribute_name'>Website:</td>
+        <td id='iw-website'></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<% include ./partials/toasts %>
+
+<% if(currentUser) { %>
+  <script type='text/javascript' src='/js/maps-a60d4b6ba6.js' data-user-interests='<%= JSON.stringify(Object.keys(currentUser.interests)) %>' id='mapScript'></script>
+<% } else { %>
+  <script type='text/javascript' src='/js/maps-a60d4b6ba6.js' data-user-interests='' id='mapScript'></script>
+<% } %>
+
+<script src='https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js'></script>
+<script async defer
+  src='https://maps.googleapis.com/maps/api/js?key=<%= MAPS_KEY %>&libraries=places&callback=initMap'>
+</script>
+
+<% include ./partials/footer %>
